@@ -283,8 +283,10 @@ export async function setInquiryStatus(id: string, status: "new" | "read" | "arc
 export async function deleteInquiry(id: string): Promise<ActionResult> {
   return run(async () => {
     const { supabase } = await requireAdmin();
+    const { data: row } = await supabase.from("contact_submissions").select("attachments").eq("id", id).maybeSingle();
     const { error } = await supabase.from("contact_submissions").delete().eq("id", id);
     if (error) throw error;
+    if (row?.attachments?.length) await supabase.storage.from("uploads").remove(row.attachments);
     revalidatePath("/admin", "layout");
     return { ok: true, message: "Deleted." };
   });
@@ -387,5 +389,138 @@ export async function saveJobs(jobs: JobInput[]): Promise<ActionResult> {
     await saveList("job_openings", rows);
     refresh();
     return { ok: true, message: "Job openings saved." };
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Private attachments: short-lived signed download link (admins only via RLS)
+// ---------------------------------------------------------------------------
+export async function getAttachmentUrl(path: string): Promise<ActionResult<{ url: string }>> {
+  return run(async (): Promise<ActionResult<{ url: string }>> => {
+    const { supabase } = await requireAdmin();
+    if (!/^(resumes|bids)\/[0-9a-f-]{36}\/[^/]+$/i.test(path)) return { ok: false, message: "Invalid file." };
+    const { data, error } = await supabase.storage.from("uploads").createSignedUrl(path, 300, { download: true });
+    if (error || !data) return { ok: false, message: error?.message ?? "Could not create link." };
+    return { ok: true, data: { url: data.signedUrl } };
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Alert recipients (admin-only table)
+// ---------------------------------------------------------------------------
+export async function saveNotificationEmails(raw: string): Promise<ActionResult> {
+  return run(async (): Promise<ActionResult> => {
+    const { supabase } = await requireAdmin();
+    const list = raw
+      .split(/[,;\s]+/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const bad = list.filter((s) => !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s));
+    if (bad.length) return { ok: false, message: `Not a valid email: ${bad.join(", ")}` };
+    if (!list.length) return { ok: false, message: "Enter at least one email address." };
+    if (list.length > 10) return { ok: false, message: "Up to 10 addresses." };
+    const { error } = await supabase.from("admin_settings").update({ notification_emails: list.join(", ") }).eq("id", 1);
+    if (error) throw error;
+    return { ok: true, message: "Alert recipients saved." };
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Prequalification + safety
+// ---------------------------------------------------------------------------
+export async function savePrequal(_prev: ActionResult, form: FormData): Promise<ActionResult> {
+  return run(async (): Promise<ActionResult> => {
+    const { supabase } = await requireAdmin();
+    const t = (k: string, max = 160) => String(form.get(k) ?? "").trim().slice(0, max);
+    let insurance: { label: string; value: string }[] = [];
+    let documents: string[] = [];
+    try {
+      insurance = (JSON.parse(String(form.get("insurance") ?? "[]")) as { label: string; value: string }[])
+        .map((i) => ({ label: String(i.label ?? "").trim().slice(0, 80), value: String(i.value ?? "").trim().slice(0, 120) }))
+        .filter((i) => i.label && i.value)
+        .slice(0, 15);
+      documents = (JSON.parse(String(form.get("documents") ?? "[]")) as string[])
+        .map((d) => String(d).trim().slice(0, 80))
+        .filter(Boolean)
+        .slice(0, 15);
+    } catch {
+      return { ok: false, message: "Invalid list data." };
+    }
+    const prequal = {
+      years_in_business: t("years_in_business", 20),
+      bonding_single: t("bonding_single"),
+      bonding_aggregate: t("bonding_aggregate"),
+      surety: t("surety"),
+      insurance,
+      documents,
+      notes: t("notes", 600),
+    };
+    const safety = {
+      emr: t("emr", 20),
+      trir: t("trir", 20),
+      dart: t("dart", 20),
+      lost_time_free: t("lost_time_free", 40),
+      program: t("program", 1200),
+    };
+    const { error } = await supabase
+      .from("site_settings")
+      .update({ prequal, safety, license_numbers: t("license_numbers", 200) || null })
+      .eq("id", 1);
+    if (error) throw error;
+    refresh();
+    return { ok: true, message: "Prequalification & safety saved." };
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Testimonials (saved as a whole list)
+// ---------------------------------------------------------------------------
+export type TestimonialInput = {
+  id?: string;
+  quote: string;
+  author_name: string;
+  author_title: string;
+  company: string;
+  is_active: boolean;
+};
+
+export async function saveTestimonials(items: TestimonialInput[]): Promise<ActionResult> {
+  return run(async (): Promise<ActionResult> => {
+    const { supabase } = await requireAdmin();
+    const rows = [];
+    for (const [i, t] of items.slice(0, 30).entries()) {
+      const quote = t.quote.trim().slice(0, 600);
+      if (!quote) return { ok: false, message: `Testimonial ${i + 1}: the quote is empty.` };
+      if (t.is_active && /placeholder/i.test(quote)) {
+        return { ok: false, message: `Testimonial ${i + 1} is still a placeholder — replace the quote before showing it.` };
+      }
+      rows.push({
+        ...(t.id ? { id: t.id } : {}),
+        quote,
+        author_name: t.author_name.trim().slice(0, 120) || null,
+        author_title: t.author_title.trim().slice(0, 120) || null,
+        company: t.company.trim().slice(0, 120) || null,
+        is_active: !!t.is_active,
+        sort_order: (i + 1) * 10,
+      });
+    }
+    const { data: existing } = await supabase.from("testimonials").select("id");
+    const keep = new Set(rows.map((r) => r.id).filter(Boolean));
+    const remove = (existing ?? []).map((r) => r.id).filter((id) => !keep.has(id));
+    if (remove.length) {
+      const { error } = await supabase.from("testimonials").delete().in("id", remove);
+      if (error) throw error;
+    }
+    for (const r of rows.filter((r) => r.id)) {
+      const { error } = await supabase.from("testimonials").update(r).eq("id", r.id!);
+      if (error) throw error;
+    }
+    const inserts = rows.filter((r) => !r.id);
+    if (inserts.length) {
+      const { error } = await supabase.from("testimonials").insert(inserts);
+      if (error) throw error;
+    }
+    refresh();
+    return { ok: true, message: "Testimonials saved." };
   });
 }

@@ -8,8 +8,9 @@ import { STATUSES } from "@/lib/types";
 import { photoFirst } from "@/lib/rank";
 import { ProjectCard } from "./ProjectCard";
 import { ArrowRight } from "./Icons";
+import { ProjectMap } from "./ProjectMap";
 
-type Filters = { status: ProjectStatus | "all"; category: string; city: string };
+type Filters = { status: ProjectStatus | "all"; category: string; city: string; view: "grid" | "map" };
 
 function readFilters(params: URLSearchParams): Filters {
   const s = params.get("status");
@@ -17,6 +18,7 @@ function readFilters(params: URLSearchParams): Filters {
     status: s === "current" || s === "upcoming" || s === "completed" ? s : "all",
     category: params.get("category") ?? "all",
     city: params.get("city") ?? "all",
+    view: params.get("view") === "map" ? "map" : "grid",
   };
 }
 
@@ -69,6 +71,7 @@ function BrowserInner({
       if (f.status !== "all") q.set("status", f.status);
       if (f.category !== "all") q.set("category", f.category);
       if (f.city !== "all") q.set("city", f.city);
+      if (f.view === "map") q.set("view", "map");
       const qs = q.toString();
       window.history.replaceState(null, "", qs ? `?${qs}` : window.location.pathname);
     }
@@ -115,7 +118,7 @@ function BrowserInner({
       <div
         className={
           mode === "full"
-            ? "sticky top-16 z-30 -mx-4 border-b border-rule bg-paper/90 px-4 backdrop-blur-md sm:top-20 sm:-mx-8 sm:px-8 lg:-mx-12 lg:px-12"
+            ? "-mx-4 border-b border-rule bg-paper/90 px-4 backdrop-blur-md sm:-mx-8 sm:px-8 lg:sticky lg:top-20 lg:z-30 lg:-mx-12 lg:px-12"
             : "border-b border-rule"
         }
       >
@@ -141,7 +144,22 @@ function BrowserInner({
             })}
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            {mode === "full" && (
+              <div role="group" aria-label="View" className="flex border border-rule bg-white">
+                {(["grid", "map"] as const).map((v) => (
+                  <button
+                    key={v}
+                    type="button"
+                    aria-pressed={filters.view === v}
+                    onClick={() => update({ view: v })}
+                    className={`label min-h-11 px-4 transition-colors ${filters.view === v ? "bg-ink text-white" : "text-mute hover:text-ink"}`}
+                  >
+                    {v === "grid" ? "Grid" : "Map"}
+                  </button>
+                ))}
+              </div>
+            )}
             {mode === "full" && cities.length > 1 && (
               <label className="relative">
                 <span className="sr-only">Filter by location</span>
@@ -201,7 +219,9 @@ function BrowserInner({
         </div>
       </div>
 
-      {shown.length === 0 ? (
+      {mode === "full" && filters.view === "map" && shown.length > 0 ? (
+        <ProjectMap key={key} projects={results} />
+      ) : shown.length === 0 ? (
         <div className="py-24 text-center">
           <p className="font-display text-4xl">No projects match.</p>
           <button

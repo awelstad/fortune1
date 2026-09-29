@@ -141,6 +141,39 @@ export type SiteSettings = {
   default_seo_description: string | null;
   social_links: Record<string, string>;
   affiliations: Affiliation[];
+  prequal: Prequal;
+  safety: Safety;
+};
+
+/** Prequalification facts — every field optional; blank fields are hidden. */
+export type Prequal = {
+  years_in_business?: string;
+  bonding_single?: string;
+  bonding_aggregate?: string;
+  surety?: string;
+  insurance?: { label: string; value: string }[];
+  documents?: string[];
+  notes?: string;
+};
+
+/** Safety record — shown only when filled in. */
+export type Safety = {
+  emr?: string;
+  trir?: string;
+  dart?: string;
+  lost_time_free?: string;
+  program?: string;
+};
+
+export type Testimonial = {
+  id: string;
+  quote: string;
+  author_name: string | null;
+  author_title: string | null;
+  company: string | null;
+  project_id: string | null;
+  sort_order: number;
+  is_active: boolean;
 };
 
 export type ContactSubmission = {
@@ -150,8 +183,10 @@ export type ContactSubmission = {
   company: string | null;
   phone: string | null;
   project_type: string | null;
-  kind: "contact" | "application";
+  kind: "contact" | "application" | "bid" | "prequal";
   position: string | null;
+  details: Record<string, string | null>;
+  attachments: string[];
   message: string;
   status: "new" | "read" | "archived";
   created_at: string;

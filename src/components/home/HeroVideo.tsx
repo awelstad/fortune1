@@ -25,9 +25,11 @@ export function HeroVideo({
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+    // YouTube pulls ~1 MB of player code; phones and tablets keep the fast photo hero instead.
+    const tooSmallForYouTube = !src && !window.matchMedia("(min-width: 1024px)").matches;
     // eslint-disable-next-line react-hooks/set-state-in-effect -- depends on browser-only APIs
-    if (!reduce && !saveData) setEnabled(true);
-  }, []);
+    if (!reduce && !saveData && !tooSmallForYouTube) setEnabled(true);
+  }, [src]);
 
   useEffect(() => {
     const v = ref.current;

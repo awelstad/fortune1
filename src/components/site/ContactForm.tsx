@@ -3,8 +3,9 @@
 import { useActionState, useState } from "react";
 import { submitContact, type ContactState } from "@/app/(site)/contact/actions";
 import { ArrowRight } from "./Icons";
+import { Turnstile } from "./Turnstile";
 
-const TYPES = ["New construction", "Renovation / tenant improvement", "Fire alarm / low voltage", "Service", "Other"];
+const TYPES = ["New construction", "Renovation / tenant improvement", "Service", "Other"];
 
 const input =
   "mt-2 block w-full border-0 border-b border-rule bg-transparent px-0 py-3 text-lg text-ink placeholder:text-mute/60 focus:border-ink focus:outline-none focus:ring-0";
@@ -67,9 +68,17 @@ export function ContactForm() {
         />
       </Field>
 
+      <Turnstile />
       <div className="flex flex-col gap-4 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
         <p className={`text-sm ${state.message ? "text-red-700" : "text-mute"}`} role={state.message ? "alert" : undefined}>
-          {state.message || "We typically respond within one business day."}
+          {state.message || (
+            <>
+              Our team will get back to you shortly.{" "}
+              <a href="/privacy" className="underline hover:text-ink">
+                Privacy policy
+              </a>
+            </>
+          )}
         </p>
         <button
           type="submit"

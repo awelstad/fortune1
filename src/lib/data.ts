@@ -12,6 +12,7 @@ import type {
   ProjectWithMedia,
   SiteSettings,
   TeamMember,
+  Testimonial,
 } from "./types";
 
 const PROJECT_SELECT =
@@ -121,6 +122,8 @@ const SITE_DEFAULTS: SiteSettings = {
     "Fortune Electrical Construction is a Florida commercial electrical contractor delivering aviation, education, government, senior living and multifamily projects.",
   social_links: {},
   affiliations: [],
+  prequal: {},
+  safety: {},
 };
 
 export const getSite = cache(async (): Promise<SiteSettings> => {
@@ -194,4 +197,14 @@ export const getJobs = cache(async (): Promise<JobOpening[]> => {
     .order("title");
   logError("getJobs", error);
   return (data as JobOpening[] | null) ?? [];
+});
+
+export const getTestimonials = cache(async (): Promise<Testimonial[]> => {
+  const { data, error } = await createPublicClient()
+    .from("testimonials")
+    .select("*")
+    .eq("is_active", true)
+    .order("sort_order");
+  logError("getTestimonials", error);
+  return (data as Testimonial[] | null) ?? [];
 });

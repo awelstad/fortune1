@@ -666,8 +666,6 @@ export const capabilities = [
   { title: "Power Distribution & Switchgear", body: "Three-phase service, switchgear and panelboards, service upgrades for heavy equipment and HVAC loads." },
   { title: "Emergency & Standby Power", body: "Generators, transfer switches and emergency power pathways for mission-critical facilities." },
   { title: "Lighting", body: "Interior, exterior, site and sports lighting, controls, emergency and exit lighting." },
-  { title: "Fire Alarm", body: "Design, installation, retrofits, testing, inspection and 24/7 monitoring." },
-  { title: "Low Voltage & Communications", body: "Structured cabling, fiber, access control, CCTV, ERRCS/BDA and intercom systems." },
   { title: "Multifamily", body: "Garden, podium and wrap communities, student housing and senior living — 50 to 500+ units." },
   { title: "Specialty Projects", body: "A dedicated division for tenant improvements, buildouts and fast-moving small commercial work." },
 ];

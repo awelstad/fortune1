@@ -103,10 +103,10 @@ export function SiteHeader({ phone }: { phone: string | null }) {
             </a>
           )}
           <Link
-            href="/contact"
+            href="/bid"
             className="label hidden items-center gap-2 bg-white px-4 py-3 text-ink transition-colors hover:bg-signal hover:text-white sm:inline-flex"
           >
-            Let&apos;s Talk <ArrowUpRight />
+            Invite Us to Bid <ArrowUpRight />
           </Link>
           {/* Discreet staff sign-in: a faint lock, full opacity only on hover/focus. */}
           <Link
@@ -166,11 +166,11 @@ export function SiteHeader({ phone }: { phone: string | null }) {
               </a>
             )}
             <Link
-              href="/contact"
+              href="/bid"
               onClick={() => setOpen(false)}
-              className="label inline-flex items-center gap-2 bg-white px-5 py-4 text-ink"
+              className="label inline-flex min-h-12 items-center gap-2 bg-white px-5 py-4 text-ink"
             >
-              Let&apos;s Talk <ArrowUpRight />
+              Invite Us to Bid <ArrowUpRight />
             </Link>
             <Link
               href="/admin"

@@ -10,7 +10,9 @@ import { SectionHeading } from "@/components/home/SectionHeading";
 import { ClosingCta } from "@/components/site/ClosingCta";
 import { ProjectBrowser } from "@/components/site/ProjectBrowser";
 import { ProjectCard } from "@/components/site/ProjectCard";
-import { getCategories, getHomepage, getProjects, getSite, getStatistics } from "@/lib/data";
+import { getCategories, getHomepage, getProjects, getSite, getStatistics, getTestimonials } from "@/lib/data";
+import { GcBand } from "@/components/home/GcBand";
+import { safetyFacts } from "@/lib/format";
 import { best, photoFirst } from "@/lib/rank";
 
 export const revalidate = 300;
@@ -18,12 +20,13 @@ export const revalidate = 300;
 const PORTFOLIO_LIMIT = 9;
 
 export default async function HomePage() {
-  const [home, site, projects, categories, stats] = await Promise.all([
+  const [home, site, projects, categories, stats, testimonials] = await Promise.all([
     getHomepage(),
     getSite(),
     getProjects(),
     getCategories(),
     getStatistics(),
+    getTestimonials(),
   ]);
 
   const featured =
@@ -81,6 +84,7 @@ export default async function HomePage() {
         imagePath="site/electrical-construction.webp"
       />
       <Industries heading={home.industries_heading ?? "Industries"} intro={home.industries_intro} tiles={tiles} />
+      <GcBand testimonials={testimonials} safety={safetyFacts(site.safety ?? {})} />
       <ClosingCta
         heading={home.cta_heading}
         subheading={home.cta_subheading}

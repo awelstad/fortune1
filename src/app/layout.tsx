@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Mona_Sans } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { SITE_URL } from "@/lib/site-url";
 import "./globals.css";
 
@@ -40,7 +41,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {/* Enables scroll-reveal styles only when JS is running. */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
       </head>
-      <body className="min-h-dvh">{children}</body>
+      <body className="min-h-dvh">
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }

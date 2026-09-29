@@ -266,7 +266,6 @@ if (!site) {
         { name: "Electrical Council of Florida", image: "/brand/aff-ecf.png" },
         { name: "Associated Builders and Contractors — Florida Gulf Coast", image: "/brand/aff-abc-fgc.png" },
         { name: "American Subcontractors Association of Southwest Florida", image: "/brand/aff-asa-swfl.png" },
-        { name: "Potter Electric Signal", image: "/brand/aff-potter.png" },
       ],
     }),
     "site",

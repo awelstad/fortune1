@@ -105,3 +105,28 @@ export function slugify(s: string): string {
     .replace(/^-+|-+$/g, "")
     .slice(0, 80);
 }
+
+/** Safety figures that have been filled in, in display order. */
+export function safetyFacts(s: {
+  emr?: string;
+  trir?: string;
+  dart?: string;
+  lost_time_free?: string;
+}): { key: string; value: string; label: string }[] {
+  const out: { key: string; value: string; label: string }[] = [];
+  if (s.emr?.trim()) out.push({ key: "emr", value: s.emr.trim(), label: "EMR" });
+  if (s.trir?.trim()) out.push({ key: "trir", value: s.trir.trim(), label: "TRIR" });
+  if (s.lost_time_free?.trim()) out.push({ key: "ltf", value: s.lost_time_free.trim(), label: "Without a lost-time incident" });
+  if (s.dart?.trim()) out.push({ key: "dart", value: s.dart.trim(), label: "DART rate" });
+  return out;
+}
+
+/** Default documents a GC can request when none are configured. */
+export const DEFAULT_PREQUAL_DOCS = [
+  "Prequalification questionnaire",
+  "Certificate of insurance",
+  "W-9",
+  "Contractor license(s)",
+  "Safety program / EMR letter",
+  "Bonding letter",
+];

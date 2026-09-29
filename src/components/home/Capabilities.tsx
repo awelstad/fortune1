@@ -26,7 +26,7 @@ export function Capabilities({
               {heading}
             </h2>
             <p className="mt-6 max-w-md leading-relaxed text-fog" data-reveal>
-              One team for power, lighting, fire alarm, low voltage and emergency systems — from preconstruction
+              One team for power distribution, lighting and emergency systems — from preconstruction
               through commissioning.
             </p>
             {src && (

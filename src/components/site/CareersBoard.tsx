@@ -4,6 +4,8 @@ import { useActionState, useRef, useState } from "react";
 import { submitApplication, type ApplyState } from "@/app/(site)/careers/actions";
 import type { JobOpening } from "@/lib/types";
 import { ArrowRight, ArrowUpRight } from "./Icons";
+import { FileDrop } from "./FileDrop";
+import { Turnstile } from "./Turnstile";
 
 const input =
   "mt-2 block w-full border-0 border-b border-rule bg-transparent px-0 py-3 text-lg text-ink placeholder:text-mute/60 focus:border-ink focus:outline-none focus:ring-0";
@@ -13,6 +15,7 @@ export function CareersBoard({ jobs, phone }: { jobs: JobOpening[]; phone: strin
   const [position, setPosition] = useState("");
   const [state, action, pending] = useActionState<ApplyState, FormData>(submitApplication, { ok: false, message: "" });
   const [started] = useState(() => Date.now());
+  const [uploading, setUploading] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
   const err = state.errors ?? {};
   const tel = phone?.replace(/[^\d+]/g, "");
@@ -164,16 +167,40 @@ export function CareersBoard({ jobs, phone }: { jobs: JobOpening[]; phone: strin
                     aria-invalid={!!err.message}
                   />
                 </F>
+                <div className="sm:col-span-2">
+                  <FileDrop
+                    name="resume"
+                    folder="resumes"
+                    label="Resume (optional)"
+                    hint="PDF or Word document. Only our HR team can see it."
+                    accept={[
+                      "application/pdf",
+                      "application/msword",
+                      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    ]}
+                    maxMB={10}
+                    onBusyChange={setUploading}
+                  />
+                </div>
+                <Turnstile />
                 <div className="flex flex-col gap-4 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
                   <p className={`text-sm ${state.message ? "text-red-700" : "text-mute"}`} role={state.message ? "alert" : undefined}>
-                    {state.message || "Employment offers are contingent on pre-employment screening."}
+                    {state.message || (
+                      <>
+                        Employment offers are contingent on pre-employment screening. See our{" "}
+                        <a href="/privacy" className="underline hover:text-ink">
+                          privacy policy
+                        </a>
+                        .
+                      </>
+                    )}
                   </p>
                   <button
                     type="submit"
-                    disabled={pending}
+                    disabled={pending || uploading}
                     className="label group inline-flex items-center justify-between gap-6 bg-ink px-7 py-5 text-white transition-colors hover:bg-signal disabled:opacity-60"
                   >
-                    {pending ? "Sending…" : "Submit Application"}
+                    {uploading ? "Uploading…" : pending ? "Sending…" : "Submit Application"}
                     <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
                   </button>
                 </div>

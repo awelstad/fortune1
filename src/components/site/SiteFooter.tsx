@@ -64,9 +64,10 @@ export function SiteFooter({ site, categories }: { site: SiteSettings; categorie
           <h2 className="label text-fog">Company</h2>
           <ul className="mt-4 text-sm sm:mt-5 sm:space-y-2.5">
             {[
+              ["/bid", "Invite Us to Bid"],
+              ["/prequalification", "Prequalification"],
               ["/team", "Our Team"],
               ["/careers", "Careers"],
-              ["/#capabilities", "Capabilities"],
               ["/contact", "Contact"],
             ].map(([href, label]) => (
               <li key={href}>
@@ -114,9 +115,14 @@ export function SiteFooter({ site, categories }: { site: SiteSettings; categorie
           <p>
             © {new Date().getFullYear()} {site.legal_name || site.company_name}. All rights reserved.
           </p>
-          <Link href="/admin" className="hover:text-white" prefetch={false}>
-            Admin
-          </Link>
+          <span className="flex gap-6">
+            <Link href="/privacy" className="-my-3 py-3 hover:text-white">
+              Privacy
+            </Link>
+            <Link href="/admin" className="-my-3 py-3 hover:text-white" prefetch={false}>
+              Admin
+            </Link>
+          </span>
         </div>
       </div>
     </footer>
