@@ -44,15 +44,15 @@ export function SiteFooter({ site, categories }: { site: SiteSettings; categorie
 
         <div className="md:col-span-3">
           <h2 className="label text-fog">Projects</h2>
-          <ul className="mt-5 space-y-2.5 text-sm">
+          <ul className="mt-4 text-sm sm:mt-5 sm:space-y-2.5">
             <li>
-              <Link className="text-white/80 hover:text-white" href="/projects">
+              <Link className="block py-2 text-white/80 hover:text-white sm:inline sm:py-0" href="/projects">
                 All Projects
               </Link>
             </li>
             {categories.slice(0, 7).map((c) => (
               <li key={c.id}>
-                <Link className="text-white/80 hover:text-white" href={`/projects?category=${c.slug}`}>
+                <Link className="block py-2 text-white/80 hover:text-white sm:inline sm:py-0" href={`/projects?category=${c.slug}`}>
                   {c.name}
                 </Link>
               </li>
@@ -62,7 +62,7 @@ export function SiteFooter({ site, categories }: { site: SiteSettings; categorie
 
         <div className="md:col-span-2">
           <h2 className="label text-fog">Company</h2>
-          <ul className="mt-5 space-y-2.5 text-sm">
+          <ul className="mt-4 text-sm sm:mt-5 sm:space-y-2.5">
             {[
               ["/team", "Our Team"],
               ["/careers", "Careers"],
@@ -70,7 +70,7 @@ export function SiteFooter({ site, categories }: { site: SiteSettings; categorie
               ["/contact", "Contact"],
             ].map(([href, label]) => (
               <li key={href}>
-                <Link className="text-white/80 hover:text-white" href={href}>
+                <Link className="block py-2 text-white/80 hover:text-white sm:inline sm:py-0" href={href}>
                   {label}
                 </Link>
               </li>

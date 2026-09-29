@@ -50,7 +50,7 @@ export default async function TeamPage() {
                 <li key={g.name}>
                   <a
                     href={`#${anchor(g.name)}`}
-                    className="label inline-flex items-center gap-2 border border-white/20 px-3.5 py-2.5 text-white/80 transition-colors hover:border-white hover:text-white"
+                    className="label inline-flex min-h-11 items-center gap-2 border border-white/20 px-3.5 py-2.5 text-white/80 transition-colors hover:border-white hover:text-white"
                   >
                     {g.name} <span className="text-white/45">{g.people.length}</span>
                   </a>
@@ -157,7 +157,7 @@ function Person({ member: m, priority }: { member: TeamMember; priority: boolean
         {m.email && (
           <a
             href={`mailto:${m.email}`}
-            className="label mt-3 inline-flex items-center gap-1.5 border-b border-ink/25 pb-0.5 text-ink transition-colors hover:border-signal hover:text-signal"
+            className="label mt-1 inline-flex items-center gap-1.5 border-b border-ink/25 pb-0.5 pt-3 text-ink transition-colors hover:border-signal hover:text-signal"
             aria-label={`Email ${m.name}`}
           >
             Email <ArrowUpRight className="size-3" />

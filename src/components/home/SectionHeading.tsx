@@ -46,7 +46,7 @@ export function SectionHeading({
           {link && (
             <Link
               href={link.href}
-              className={`label group mt-5 inline-flex items-center gap-3 border-b pb-1.5 ${
+              className={`label group mt-2 inline-flex items-center gap-3 border-b pb-1.5 pt-3 ${
                 dark ? "border-white/30 text-white hover:border-white" : "border-ink/30 text-ink hover:border-ink"
               }`}
             >

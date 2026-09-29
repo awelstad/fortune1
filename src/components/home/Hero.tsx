@@ -101,7 +101,7 @@ export function Hero({
                   <span className="size-1.5 animate-pulse-live rounded-full bg-live" aria-hidden />
                   Now Building
                 </p>
-                <Link href="/projects?status=current" className="label text-white/50 transition-colors hover:text-white">
+                <Link href="/projects?status=current" className="label -my-2 py-3 text-white/60 transition-colors hover:text-white">
                   All current →
                 </Link>
               </div>
@@ -158,7 +158,7 @@ function HeroFigure({ value, unit, label }: { value: string | null; unit?: strin
         {value ?? "—"}
         {value && unit && <span className="ml-0.5 text-[0.45em] tracking-normal">{unit}</span>}
       </span>
-      <span className="label mt-1 block text-[0.6rem] text-white/45">{label}</span>
+      <span className="label mt-1 block text-white/50">{label}</span>
     </span>
   );
 }

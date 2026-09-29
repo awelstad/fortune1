@@ -76,7 +76,7 @@ export function SiteHeader({ phone }: { phone: string | null }) {
             width={868}
             height={207}
             priority
-            className="h-9 w-auto sm:h-11"
+            className="h-10 w-auto sm:h-11"
           />
         </Link>
 

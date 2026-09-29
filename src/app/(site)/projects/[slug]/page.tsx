@@ -258,7 +258,7 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
               <h2 id="more-heading" className="font-display text-5xl sm:text-7xl">
                 More Projects
               </h2>
-              <Link href="/projects" className="label group inline-flex items-center gap-3 border-b border-ink/30 pb-1.5 hover:border-ink">
+              <Link href="/projects" className="label group inline-flex items-center gap-3 border-b border-ink/30 pb-1.5 pt-3 hover:border-ink">
                 All projects <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
@@ -288,7 +288,7 @@ function HeroText({ project, where, inline = false }: { project: ProjectWithMedi
   return (
     <div className={inline ? "" : "shell pb-12 pt-32 sm:pb-16"}>
       <nav aria-label="Breadcrumb" className="label mb-8 text-white/60" data-reveal>
-        <Link href="/projects" className="hover:text-white">
+        <Link href="/projects" className="-my-3 inline-block py-3 hover:text-white">
           Projects
         </Link>
         {project.category && (
@@ -296,7 +296,7 @@ function HeroText({ project, where, inline = false }: { project: ProjectWithMedi
             <span className="mx-2" aria-hidden>
               /
             </span>
-            <Link href={`/projects?category=${project.category.slug}`} className="hover:text-white">
+            <Link href={`/projects?category=${project.category.slug}`} className="-my-3 inline-block py-3 hover:text-white">
               {project.category.name}
             </Link>
           </>

@@ -131,7 +131,7 @@ function BrowserInner({
                   type="button"
                   aria-pressed={on}
                   onClick={() => update({ status: s.key as Filters["status"] })}
-                  className={`label shrink-0 px-4 py-3 transition-colors ${
+                  className={`label min-h-11 shrink-0 px-4 py-3 transition-colors ${
                     on ? "bg-ink text-white" : "text-mute hover:bg-bone hover:text-ink"
                   }`}
                 >
@@ -148,7 +148,7 @@ function BrowserInner({
                 <select
                   value={filters.city}
                   onChange={(e) => update({ city: e.target.value })}
-                  className="label appearance-none border border-rule bg-white py-3 pl-4 pr-10 text-ink hover:border-ink"
+                  className="label min-h-11 appearance-none border border-rule bg-white py-3 pl-4 pr-10 text-ink hover:border-ink"
                 >
                   <option value="all">All Locations</option>
                   {cities.map(([c, n]) => (
@@ -169,7 +169,7 @@ function BrowserInner({
               <button
                 type="button"
                 onClick={() => update({ status: "all", category: "all", city: "all" })}
-                className="label whitespace-nowrap text-signal hover:text-ink"
+                className="label min-h-11 whitespace-nowrap px-2 text-signal hover:text-ink"
               >
                 Clear
               </button>
@@ -190,7 +190,7 @@ function BrowserInner({
                 type="button"
                 aria-pressed={on}
                 onClick={() => update({ category: c.slug })}
-                className={`label shrink-0 border px-3.5 py-2.5 transition-colors ${
+                className={`label min-h-11 shrink-0 border px-3.5 py-2.5 transition-colors ${
                   on ? "border-ink bg-ink text-white" : "border-rule bg-white text-ink hover:border-ink"
                 }`}
               >
