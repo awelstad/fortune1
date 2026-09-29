@@ -99,6 +99,7 @@ export type HomepageSettings = {
   hero_headline: string | null;
   hero_subheadline: string | null;
   hero_image_path: string | null;
+  hero_video_path: string | null;
   hero_primary_label: string | null;
   hero_primary_href: string | null;
   hero_secondary_label: string | null;
@@ -148,7 +149,34 @@ export type ContactSubmission = {
   company: string | null;
   phone: string | null;
   project_type: string | null;
+  kind: "contact" | "application";
+  position: string | null;
   message: string;
   status: "new" | "read" | "archived";
   created_at: string;
+};
+
+export type TeamMember = {
+  id: string;
+  name: string;
+  title: string | null;
+  group_name: string;
+  email: string | null;
+  phone: string | null;
+  photo_path: string | null;
+  bio: string | null;
+  sort_order: number;
+  is_active: boolean;
+};
+
+export type JobOpening = {
+  id: string;
+  title: string;
+  department: string | null;
+  location: string | null;
+  employment_type: string | null;
+  summary: string | null;
+  description: string | null;
+  sort_order: number;
+  is_active: boolean;
 };

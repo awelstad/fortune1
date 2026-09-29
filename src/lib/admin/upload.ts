@@ -48,3 +48,21 @@ export async function uploadImage(file: File, folder: string) {
   if (error) throw new Error(`${file.name}: ${error.message}`);
   return { path, width, height };
 }
+
+export const VIDEO_ACCEPT = ["video/mp4", "video/webm"];
+export const VIDEO_MAX_BYTES = 50 * 1024 * 1024;
+
+/** Uploads a background video to `site/`. Keep it short, muted-friendly and under 50 MB. */
+export async function uploadVideo(file: File) {
+  if (!VIDEO_ACCEPT.includes(file.type)) throw new Error("Only MP4 or WebM videos are allowed.");
+  if (file.size > VIDEO_MAX_BYTES) throw new Error("Video is larger than 50 MB — export a shorter or more compressed clip.");
+  const ext = file.type === "video/webm" ? "webm" : "mp4";
+  const path = `site/hero-${crypto.randomUUID()}.${ext}`;
+  const { error } = await createClient().storage.from("media").upload(path, file, {
+    contentType: file.type,
+    cacheControl: "31536000",
+    upsert: false,
+  });
+  if (error) throw new Error(error.message);
+  return { path };
+}

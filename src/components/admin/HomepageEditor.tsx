@@ -5,6 +5,7 @@ import { saveHomepage } from "@/app/admin/(panel)/content-actions";
 import type { ActionResult } from "@/lib/admin/auth";
 import type { Capability, HomepageSettings } from "@/lib/types";
 import { SingleImageField } from "./SingleImageField";
+import { VideoField } from "./VideoField";
 import { Button, Card, Field, Input, Select, Textarea } from "./ui";
 
 export function HomepageEditor({
@@ -66,9 +67,14 @@ export function HomepageEditor({
             </Field>
           </div>
         </Card>
-        <Card title="Hero image" description="Full-screen. Use a 2400px+ wide landscape photo of real Fortune work.">
-          <SingleImageField name="hero_image_path" folder="site" initialPath={home.hero_image_path} />
-        </Card>
+        <div className="space-y-6">
+          <Card title="Hero image" description="Full-screen. Use a 2400px+ wide landscape photo of real Fortune work. Also shown while the video loads.">
+            <SingleImageField name="hero_image_path" folder="site" initialPath={home.hero_image_path} />
+          </Card>
+          <Card title="Hero background video" description="Optional. Plays silently behind the headline.">
+            <VideoField name="hero_video_path" initialPath={home.hero_video_path} />
+          </Card>
+        </div>
       </div>
 
       <Card title="Featured project" description="The large editorial feature further down the homepage.">

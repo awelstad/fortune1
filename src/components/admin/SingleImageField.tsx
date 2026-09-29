@@ -59,7 +59,7 @@ export function SingleImageField({
           </div>
         )}
       </div>
-      <div className="mt-2 flex gap-2">
+      <div className="mt-2 flex flex-wrap gap-2">
         <Button variant="secondary" disabled={busy} onClick={() => input.current?.click()}>
           {busy ? "Uploading…" : src ? "Replace" : "Upload"}
         </Button>

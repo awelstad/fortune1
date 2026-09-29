@@ -10,7 +10,8 @@
     "db:migrate": "node --env-file=.env.local scripts/migrate.mjs",
     "db:import": "node --env-file=.env.local scripts/import-legacy.mjs",
     "admin:create": "node --env-file=.env.local scripts/create-admin.mjs",
-    "typecheck": "next typegen && tsc --noEmit"
+    "typecheck": "next typegen && tsc --noEmit",
+    "db:import-team": "node --env-file=.env.local scripts/import-team.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

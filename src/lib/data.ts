@@ -6,10 +6,12 @@ import type {
   Category,
   CompanyStatistic,
   HomepageSettings,
+  JobOpening,
   Project,
   ProjectImage,
   ProjectWithMedia,
   SiteSettings,
+  TeamMember,
 } from "./types";
 
 const PROJECT_SELECT =
@@ -63,6 +65,7 @@ const HOME_DEFAULTS: HomepageSettings = {
   hero_headline: "Powering Florida's biggest builds.",
   hero_subheadline: null,
   hero_image_path: null,
+  hero_video_path: null,
   hero_primary_label: "View Our Projects",
   hero_primary_href: "/projects",
   hero_secondary_label: "Let's Work Together",
@@ -168,4 +171,26 @@ export const getStatistics = cache(async (): Promise<ResolvedStat[]> => {
   ]);
   logError("getStatistics", error);
   return resolveStatistics((data as CompanyStatistic[] | null) ?? [], projects);
+});
+
+export const getTeam = cache(async (): Promise<TeamMember[]> => {
+  const { data, error } = await createPublicClient()
+    .from("team_members")
+    .select("*")
+    .eq("is_active", true)
+    .order("sort_order")
+    .order("name");
+  logError("getTeam", error);
+  return (data as TeamMember[] | null) ?? [];
+});
+
+export const getJobs = cache(async (): Promise<JobOpening[]> => {
+  const { data, error } = await createPublicClient()
+    .from("job_openings")
+    .select("*")
+    .eq("is_active", true)
+    .order("sort_order")
+    .order("title");
+  logError("getJobs", error);
+  return (data as JobOpening[] | null) ?? [];
 });

@@ -4,6 +4,7 @@ import type { HomepageSettings, ProjectWithMedia } from "@/lib/types";
 import { locationOf, money, squareFeet } from "@/lib/format";
 import { mediaUrl } from "@/lib/media";
 import { ArrowRight, ArrowUpRight } from "@/components/site/Icons";
+import { HeroVideo } from "./HeroVideo";
 
 export function Hero({
   home,
@@ -17,6 +18,7 @@ export function Hero({
   locationLine: string;
 }) {
   const src = mediaUrl(home.hero_image_path);
+  const video = mediaUrl(home.hero_video_path);
 
   return (
     <section className="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-ink text-white">
@@ -31,6 +33,11 @@ export function Hero({
             quality={75}
             className="animate-ken-burns object-cover"
           />
+        </div>
+      )}
+      {video && (
+        <div className="absolute inset-0 -z-20">
+          <HeroVideo src={video} poster={src} />
         </div>
       )}
       <div

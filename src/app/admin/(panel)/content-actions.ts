@@ -31,7 +31,12 @@ function safeHref(v: string | null) {
 
 function safeMediaPath(v: string | null) {
   if (!v) return null;
-  return /^(site|projects|categories)\/[\w\-./]+\.(jpe?g|png|webp|avif|gif)$/i.test(v) && !v.includes("..") ? v : null;
+  return /^(site|projects|categories|team)\/[\w\-./]+\.(jpe?g|png|webp|avif|gif)$/i.test(v) && !v.includes("..") ? v : null;
+}
+
+function safeVideoPath(v: string | null) {
+  if (!v) return null;
+  return /^site\/[\w\-./]+\.(mp4|webm)$/i.test(v) && !v.includes("..") ? v : null;
 }
 
 // ---------------------------------------------------------------------------
@@ -56,6 +61,7 @@ export async function saveHomepage(_prev: ActionResult, form: FormData): Promise
       hero_headline: text(form, "hero_headline", 160),
       hero_subheadline: text(form, "hero_subheadline", 400),
       hero_image_path: safeMediaPath(text(form, "hero_image_path", 300)),
+      hero_video_path: safeVideoPath(text(form, "hero_video_path", 300)),
       hero_primary_label: text(form, "hero_primary_label", 60),
       hero_primary_href: safeHref(text(form, "hero_primary_href", 300)),
       hero_secondary_label: text(form, "hero_secondary_label", 60),
@@ -276,5 +282,105 @@ export async function deleteInquiry(id: string): Promise<ActionResult> {
     if (error) throw error;
     revalidatePath("/admin", "layout");
     return { ok: true, message: "Deleted." };
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Team (saved as a whole list)
+// ---------------------------------------------------------------------------
+export type TeamInput = {
+  id?: string;
+  name: string;
+  title: string;
+  group_name: string;
+  email: string;
+  photo_path: string | null;
+  is_active: boolean;
+};
+
+async function saveList<T extends { id?: string }>(
+  table: "team_members" | "job_openings",
+  rows: (Omit<T, "id"> & { id?: string; sort_order: number })[],
+) {
+  const { supabase } = await requireAdmin();
+  const { data: existing } = await supabase.from(table).select("id");
+  const keep = new Set(rows.map((r) => r.id).filter(Boolean));
+  const remove = (existing ?? []).map((r) => r.id).filter((id) => !keep.has(id));
+  if (remove.length) {
+    const { error } = await supabase.from(table).delete().in("id", remove);
+    if (error) throw error;
+  }
+  for (const r of rows.filter((r) => r.id)) {
+    const { error } = await supabase.from(table).update(r).eq("id", r.id!);
+    if (error) throw error;
+  }
+  const inserts = rows.filter((r) => !r.id).map(({ id: _id, ...r }) => {
+    void _id;
+    return r;
+  });
+  if (inserts.length) {
+    const { error } = await supabase.from(table).insert(inserts);
+    if (error) throw error;
+  }
+}
+
+export async function saveTeam(members: TeamInput[]): Promise<ActionResult> {
+  return run(async (): Promise<ActionResult> => {
+    const rows = [];
+    for (const [i, m] of members.slice(0, 200).entries()) {
+      const name = m.name.trim().slice(0, 120);
+      if (!name) return { ok: false, message: `Row ${i + 1}: name is required.` };
+      const email = m.email.trim().slice(0, 200);
+      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { ok: false, message: `${name}: invalid email.` };
+      rows.push({
+        ...(m.id ? { id: m.id } : {}),
+        name,
+        title: m.title.trim().slice(0, 120) || null,
+        group_name: m.group_name.trim().slice(0, 60) || "Team",
+        email: email || null,
+        photo_path: m.photo_path && /^team\/[\w\-./]+\.(jpe?g|png|webp|avif|gif)$/i.test(m.photo_path) ? m.photo_path : null,
+        is_active: !!m.is_active,
+        sort_order: (i + 1) * 10,
+      });
+    }
+    await saveList("team_members", rows);
+    refresh();
+    return { ok: true, message: "Team saved." };
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Job openings (saved as a whole list)
+// ---------------------------------------------------------------------------
+export type JobInput = {
+  id?: string;
+  title: string;
+  department: string;
+  location: string;
+  employment_type: string;
+  summary: string;
+  is_active: boolean;
+};
+
+export async function saveJobs(jobs: JobInput[]): Promise<ActionResult> {
+  return run(async (): Promise<ActionResult> => {
+    const rows = [];
+    for (const [i, j] of jobs.slice(0, 100).entries()) {
+      const title = j.title.trim().slice(0, 120);
+      if (!title) return { ok: false, message: `Row ${i + 1}: job title is required.` };
+      rows.push({
+        ...(j.id ? { id: j.id } : {}),
+        title,
+        department: j.department.trim().slice(0, 80) || null,
+        location: j.location.trim().slice(0, 80) || null,
+        employment_type: j.employment_type.trim().slice(0, 40) || null,
+        summary: j.summary.trim().slice(0, 400) || null,
+        is_active: !!j.is_active,
+        sort_order: (i + 1) * 10,
+      });
+    }
+    await saveList("job_openings", rows);
+    refresh();
+    return { ok: true, message: "Job openings saved." };
   });
 }

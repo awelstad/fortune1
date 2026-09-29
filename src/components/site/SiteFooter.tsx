@@ -30,7 +30,7 @@ export function SiteFooter({ site, categories }: { site: SiteSettings; categorie
       )}
 
       <div className="shell grid gap-12 py-16 md:grid-cols-12">
-        <div className="md:col-span-5">
+        <div className="md:col-span-4">
           <Image
             src="/brand/fortune-logo-light.png"
             alt={site.company_name}
@@ -60,7 +60,25 @@ export function SiteFooter({ site, categories }: { site: SiteSettings; categorie
           </ul>
         </div>
 
-        <address className="not-italic md:col-span-4">
+        <div className="md:col-span-2">
+          <h2 className="label text-fog">Company</h2>
+          <ul className="mt-5 space-y-2.5 text-sm">
+            {[
+              ["/team", "Our Team"],
+              ["/careers", "Careers"],
+              ["/#capabilities", "Capabilities"],
+              ["/contact", "Contact"],
+            ].map(([href, label]) => (
+              <li key={href}>
+                <Link className="text-white/80 hover:text-white" href={href}>
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <address className="not-italic md:col-span-3">
           <h2 className="label text-fog">Contact</h2>
           <div className="mt-5 space-y-3 text-sm text-white/80">
             {site.phone && (

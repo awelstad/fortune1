@@ -9,7 +9,9 @@ const ITEMS = [
   { href: "/admin/homepage", label: "Homepage" },
   { href: "/admin/statistics", label: "Statistics" },
   { href: "/admin/categories", label: "Industries" },
-  { href: "/admin/inquiries", label: "Inquiries" },
+  { href: "/admin/team", label: "Team" },
+  { href: "/admin/careers", label: "Job Openings" },
+  { href: "/admin/inquiries", label: "Inquiries & Applications" },
   { href: "/admin/settings", label: "Site Settings" },
   { href: "/admin/account", label: "Account" },
 ];

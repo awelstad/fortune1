@@ -10,6 +10,8 @@ const NAV = [
   { href: "/projects", label: "Projects" },
   { href: "/#industries", label: "Industries" },
   { href: "/#capabilities", label: "Capabilities" },
+  { href: "/team", label: "Team" },
+  { href: "/careers", label: "Careers" },
   { href: "/contact", label: "Contact" },
 ];
 
@@ -78,7 +80,7 @@ export function SiteHeader({ phone }: { phone: string | null }) {
           />
         </Link>
 
-        <nav aria-label="Primary" className="hidden items-center gap-9 lg:flex">
+        <nav aria-label="Primary" className="hidden items-center gap-6 lg:flex xl:gap-9">
           {NAV.map((n) => (
             <Link
               key={n.href}
@@ -105,6 +107,16 @@ export function SiteHeader({ phone }: { phone: string | null }) {
             className="label hidden items-center gap-2 bg-white px-4 py-3 text-ink transition-colors hover:bg-signal hover:text-white sm:inline-flex"
           >
             Let&apos;s Talk <ArrowUpRight />
+          </Link>
+          {/* Discreet staff sign-in: a faint lock, full opacity only on hover/focus. */}
+          <Link
+            href="/admin"
+            prefetch={false}
+            title="Staff sign-in"
+            aria-label="Staff sign-in"
+            className="hidden size-9 place-items-center text-white/25 transition-colors hover:text-white focus-visible:text-white lg:grid"
+          >
+            <LockIcon />
           </Link>
           <button
             ref={menuButton}
@@ -160,9 +172,26 @@ export function SiteHeader({ phone }: { phone: string | null }) {
             >
               Let&apos;s Talk <ArrowUpRight />
             </Link>
+            <Link
+              href="/admin"
+              prefetch={false}
+              onClick={() => setOpen(false)}
+              className="label mt-6 flex items-center gap-2 text-white/30 hover:text-white"
+            >
+              <LockIcon /> Staff sign-in
+            </Link>
           </div>
         </nav>
       </div>
     </header>
+  );
+}
+
+function LockIcon() {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" className="size-4" aria-hidden>
+      <rect x="4" y="9" width="12" height="8" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M7 9V6.5a3 3 0 0 1 6 0V9" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
   );
 }

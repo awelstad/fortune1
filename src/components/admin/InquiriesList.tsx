@@ -9,9 +9,12 @@ import { Badge, Button, Select } from "./ui";
 export function InquiriesList({ items }: { items: ContactSubmission[] }) {
   const router = useRouter();
   const [filter, setFilter] = useState<"active" | "archived">("active");
+  const [kind, setKind] = useState<"all" | "contact" | "application">("all");
   const [open, setOpen] = useState<string | null>(null);
   const [, start] = useTransition();
-  const shown = items.filter((i) => (filter === "archived" ? i.status === "archived" : i.status !== "archived"));
+  const shown = items
+    .filter((i) => (filter === "archived" ? i.status === "archived" : i.status !== "archived"))
+    .filter((i) => kind === "all" || i.kind === kind);
 
   const act = (fn: () => Promise<unknown>) =>
     start(async () => {
@@ -21,10 +24,17 @@ export function InquiriesList({ items }: { items: ContactSubmission[] }) {
 
   return (
     <div className="space-y-4">
-      <Select value={filter} onChange={(e) => setFilter(e.target.value as typeof filter)} className="w-48!" aria-label="Filter inquiries">
-        <option value="active">Inbox</option>
-        <option value="archived">Archived</option>
-      </Select>
+      <div className="flex flex-wrap gap-2">
+        <Select value={filter} onChange={(e) => setFilter(e.target.value as typeof filter)} className="w-48!" aria-label="Filter inquiries">
+          <option value="active">Inbox</option>
+          <option value="archived">Archived</option>
+        </Select>
+        <Select value={kind} onChange={(e) => setKind(e.target.value as typeof kind)} className="w-56!" aria-label="Filter by type">
+          <option value="all">All messages</option>
+          <option value="contact">Project inquiries</option>
+          <option value="application">Job applications</option>
+        </Select>
+      </div>
       {shown.length === 0 ? (
         <p className="rounded-lg border border-dashed border-zinc-300 bg-white p-10 text-center text-sm text-zinc-500">No inquiries.</p>
       ) : (
@@ -43,6 +53,7 @@ export function InquiriesList({ items }: { items: ContactSubmission[] }) {
                 <div className="min-w-0">
                   <p className="flex items-center gap-2 font-medium">
                     {i.status === "new" && <Badge tone="live">New</Badge>}
+                    {i.kind === "application" && <Badge tone="upcoming">Application · {i.position ?? "General"}</Badge>}
                     {i.name}
                     {i.company && <span className="font-normal text-zinc-500">· {i.company}</span>}
                   </p>
