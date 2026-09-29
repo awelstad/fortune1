@@ -99,8 +99,8 @@ export default async function HomePage() {
 function StaticGrid({ projects }: { projects: Awaited<ReturnType<typeof getProjects>> }) {
   return (
     <ul className="grid gap-x-6 gap-y-12 pt-10 sm:grid-cols-2 lg:grid-cols-3">
-      {projects.map((p) => (
-        <li key={p.id}>
+      {projects.map((p, i) => (
+        <li key={p.id} className={i >= 5 ? "max-sm:hidden" : ""}>
           <ProjectCard project={p} />
         </li>
       ))}

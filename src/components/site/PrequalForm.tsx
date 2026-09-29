@@ -37,7 +37,7 @@ export function PrequalForm({ documents }: { documents: string[] }) {
           {documents.map((d) => (
             <label
               key={d}
-              className="flex min-h-12 cursor-pointer items-center gap-3 border border-rule bg-white px-4 py-3 transition-colors has-[:checked]:border-ink has-[:checked]:bg-ink has-[:checked]:text-white"
+              className="flex min-h-12 cursor-pointer items-center gap-3 border border-rule bg-white px-4 py-3 transition-colors has-[:checked]:border-ink has-[:checked]:font-medium"
             >
               <input type="checkbox" name="docs" value={d} defaultChecked className="size-4 accent-signal" />
               <span className="text-sm">{d}</span>

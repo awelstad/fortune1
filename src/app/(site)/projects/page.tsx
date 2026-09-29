@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Suspense } from "react";
 import { ProjectBrowser } from "@/components/site/ProjectBrowser";
 import { ProjectCard } from "@/components/site/ProjectCard";
@@ -48,10 +49,19 @@ export default async function ProjectsPage() {
               Our Projects
             </h1>
           </div>
-          <p className="max-w-md text-lg leading-relaxed text-fog lg:col-span-4 lg:pb-4" data-reveal>
-            Terminals, courthouses, campuses, senior living towers and multifamily communities — the work speaks for
-            itself.
-          </p>
+          <div className="lg:col-span-4 lg:pb-4" data-reveal>
+            <p className="max-w-md text-lg leading-relaxed text-fog">
+              Terminals, courthouses, campuses, senior living towers and multifamily communities — the work speaks for
+              itself.
+            </p>
+            <Link
+              href="/projects?view=map#browse"
+              className="label group mt-6 inline-flex min-h-12 items-center gap-3 border border-white/30 px-5 py-3 text-white transition-colors hover:border-white hover:bg-white/10"
+            >
+              View on the Florida map
+              <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
+            </Link>
+          </div>
         </div>
         {facts.length > 0 && (
           <div className="shell mt-14">
@@ -70,7 +80,7 @@ export default async function ProjectsPage() {
         )}
       </section>
 
-      <section aria-label="Project browser" className="bg-paper pb-24 sm:pb-32">
+      <section id="browse" aria-label="Project browser" className="scroll-mt-20 bg-paper pb-24 sm:pb-32">
         <div className="shell">
           <Suspense
             fallback={

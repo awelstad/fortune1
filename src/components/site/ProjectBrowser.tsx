@@ -44,7 +44,9 @@ export function ProjectBrowser({
   const params = useSearchParams();
   // Only the full /projects browser reads (and writes) filters from the URL.
   const filters = readFilters(mode === "full" ? new URLSearchParams(params.toString()) : new URLSearchParams());
-  return <BrowserInner projects={projects} categories={categories} mode={mode} limit={limit} initial={filters} />;
+  // Re-sync when the URL changes (e.g. a link to ?view=map from elsewhere on the page).
+  const syncKey = mode === "full" ? params.toString() : "preview";
+  return <BrowserInner key={syncKey} projects={projects} categories={categories} mode={mode} limit={limit} initial={filters} />;
 }
 
 
@@ -123,7 +125,7 @@ function BrowserInner({
         }
       >
         <div className="flex flex-col gap-4 py-4 lg:flex-row lg:items-center lg:justify-between">
-          <div role="group" aria-label="Filter by status" className="flex gap-1 overflow-x-auto scrollbar-none">
+          <div role="group" aria-label="Filter by status" className="flex gap-1 overflow-x-auto scrollbar-none max-lg:pr-8 max-lg:[mask-image:linear-gradient(to_right,black_calc(100%-2.5rem),transparent)]">
             {[{ key: "all", label: "All" }, ...STATUSES].map((s) => {
               const count = statusCounts[s.key] ?? 0;
               if (s.key !== "all" && count === 0 && filters.status !== s.key) return null;
@@ -237,7 +239,7 @@ function BrowserInner({
           {shown.map((p, i) => (
             <li
               key={p.id}
-              className={`animate-fade-up ${mode === "full" && i === 0 && shown.length > 4 ? "sm:col-span-2" : ""}`}
+              className={`animate-fade-up ${mode === "full" && i === 0 && shown.length > 4 ? "sm:col-span-2" : ""} ${mode === "preview" && i >= 5 ? "max-sm:hidden" : ""}`}
               style={{ animationDelay: `${Math.min(i, 8) * 50}ms` }}
             >
               <ProjectCard

@@ -106,10 +106,10 @@ export function Hero({
                 </Link>
               </div>
               <ul>
-                {nowBuilding.map((p) => {
+                {nowBuilding.map((p, idx) => {
                   const value = p.project_value ?? p.electrical_contract_value;
                   return (
-                    <li key={p.id} className="border-b border-white/10 last:border-0">
+                    <li key={p.id} className={`border-b border-white/10 last:border-0 ${idx > 0 ? "max-sm:hidden" : ""}`}>
                       <Link
                         href={`/projects/${p.slug}`}
                         className="group grid gap-3 px-5 py-3.5 transition-colors hover:bg-white/5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-4"
@@ -137,7 +137,7 @@ export function Hero({
         </div>
       </div>
 
-      <div className="shell flex items-center justify-between border-t border-white/10 py-4">
+      <div className="shell hidden items-center justify-between border-t border-white/10 py-4 sm:flex">
         <p className="label text-white/50">{locationLine}</p>
         <div className="flex items-center gap-3" aria-hidden>
           <span className="label text-white/50">Scroll</span>

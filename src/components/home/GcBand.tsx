@@ -16,10 +16,15 @@ export function GcBand({
   safety: { key: string; value: string; label: string }[];
 }) {
   const proof = testimonials.length > 0 || safety.length > 0;
+  const steps = [
+    ["Send the invite", "Project, bid date and a link to the plans."],
+    ["We review", "Preconstruction checks scope and schedule, and flags RFIs early."],
+    ["You get a number", "A complete, clearly qualified electrical bid before your deadline."],
+  ];
   return (
     <section aria-labelledby="gc-heading" className="border-t border-rule bg-paper py-20 sm:py-28">
-      <div className={`shell grid gap-14 ${proof ? "lg:grid-cols-12 lg:items-center" : ""}`}>
-        <div className={proof ? "lg:col-span-5" : "max-w-3xl"}>
+      <div className="shell grid gap-14 lg:grid-cols-12 lg:items-center">
+        <div className="lg:col-span-5">
           <p className="label mb-5 flex items-center gap-3 text-mute" data-reveal>
             <span className="h-px w-8 bg-signal" aria-hidden />
             For General Contractors
@@ -48,6 +53,19 @@ export function GcBand({
           </div>
         </div>
 
+        {!proof && (
+          <ol className="border-t border-ink lg:col-span-6 lg:col-start-7" data-reveal>
+            {steps.map(([t, d], i) => (
+              <li key={t} className="grid grid-cols-[3rem_1fr] gap-2 border-b border-rule py-6 sm:grid-cols-[4rem_1fr]">
+                <span className="label pt-1.5 text-signal">{String(i + 1).padStart(2, "0")}</span>
+                <div>
+                  <p className="font-display text-3xl sm:text-4xl">{t}</p>
+                  <p className="mt-2 text-mute">{d}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        )}
         {proof && (
           <div className="space-y-10 lg:col-span-6 lg:col-start-7">
             {safety.length > 0 && (

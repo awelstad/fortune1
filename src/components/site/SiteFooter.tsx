@@ -29,8 +29,8 @@ export function SiteFooter({ site, categories }: { site: SiteSettings; categorie
         </div>
       )}
 
-      <div className="shell grid gap-12 py-16 md:grid-cols-12">
-        <div className="md:col-span-4">
+      <div className="shell grid grid-cols-2 gap-x-6 gap-y-12 py-16 md:grid-cols-12">
+        <div className="col-span-2 md:col-span-4">
           <Image
             src="/brand/fortune-logo-light.svg"
             alt={site.company_name}
@@ -79,7 +79,7 @@ export function SiteFooter({ site, categories }: { site: SiteSettings; categorie
           </ul>
         </div>
 
-        <address className="not-italic md:col-span-3">
+        <address className="col-span-2 not-italic md:col-span-3">
           <h2 className="label text-fog">Contact</h2>
           <div className="mt-5 space-y-3 text-sm text-white/80">
             {site.phone && (
