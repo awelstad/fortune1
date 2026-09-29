@@ -654,7 +654,7 @@ export const draftCurrent = [
 export const statistics = [
   { label: "Years Serving Florida", value: 20, suffix: "+", auto_source: "manual", sort_order: 1, is_active: true },
   { label: "Projects in Portfolio", auto_source: "project_count", sort_order: 2, is_active: true },
-  { label: "Square Feet Delivered", auto_source: "square_feet", compact: true, suffix: "+", sort_order: 3, is_active: true, description: "Sum of square footage across published projects" },
+  { label: "Square Feet in Portfolio", auto_source: "square_feet", compact: true, suffix: "+", sort_order: 3, is_active: true, description: "Sum of square footage across published projects" },
   { label: "Residential Units", auto_source: "units", suffix: "+", sort_order: 4, is_active: true, description: "Sum of units across published projects" },
   // Fortune to supply — hidden until a value is entered
   { label: "Project Volume", prefix: "$", compact: true, suffix: "+", auto_source: "manual", sort_order: 5, is_active: false },

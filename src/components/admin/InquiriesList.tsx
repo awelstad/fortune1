@@ -21,7 +21,7 @@ export function InquiriesList({ items }: { items: ContactSubmission[] }) {
 
   return (
     <div className="space-y-4">
-      <Select value={filter} onChange={(e) => setFilter(e.target.value as typeof filter)} className="w-48" aria-label="Filter inquiries">
+      <Select value={filter} onChange={(e) => setFilter(e.target.value as typeof filter)} className="w-48!" aria-label="Filter inquiries">
         <option value="active">Inbox</option>
         <option value="archived">Archived</option>
       </Select>

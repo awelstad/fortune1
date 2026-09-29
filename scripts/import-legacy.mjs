@@ -135,9 +135,10 @@ const drafts = draftCurrent
     published: false,
     display_order: 2 + i,
   }));
-if (newRows.length + drafts.length) {
-  must(await db.from("projects").insert([...newRows, ...drafts]), "projects insert");
-}
+// Inserted separately: a bulk insert sends the union of columns, so rows
+// missing a key would get NULL instead of the column default.
+if (newRows.length) must(await db.from("projects").insert(newRows), "projects insert");
+if (drafts.length) must(await db.from("projects").insert(drafts), "drafts insert");
 console.log(`  inserted ${newRows.length} projects, ${drafts.length} drafts`);
 
 const projRows = must(
@@ -276,6 +277,16 @@ if (!site) {
 const { count: statCount } = await db
   .from("company_statistics")
   .select("id", { count: "exact", head: true });
-if (!statCount) must(await db.from("company_statistics").insert(statistics), "statistics");
+if (!statCount) {
+  const rows = statistics.map((s) => ({
+    value: null,
+    prefix: null,
+    suffix: null,
+    compact: false,
+    description: null,
+    ...s,
+  }));
+  must(await db.from("company_statistics").insert(rows), "statistics");
+}
 
 console.log("done.");

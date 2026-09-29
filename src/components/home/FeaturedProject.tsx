@@ -51,8 +51,11 @@ export function FeaturedProject({ project }: { project: ProjectWithMedia }) {
 
           {metrics.length > 0 && (
             <dl className="grid grid-cols-2 gap-px bg-white/10" data-reveal style={{ ["--reveal-delay" as string]: "120ms" }}>
-              {metrics.map((m) => (
-                <div key={m.key} className="bg-ink p-5 sm:p-6">
+              {metrics.map((m, i) => (
+                <div
+                  key={m.key}
+                  className={`bg-ink p-5 sm:p-6 ${i === metrics.length - 1 && metrics.length % 2 === 1 ? "col-span-2" : ""}`}
+                >
                   <dt className="sr-only">{m.label}</dt>
                   <dd>
                     <MetricBlock metric={m} size="lg" tone="dark" />

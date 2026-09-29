@@ -8,7 +8,7 @@ import { ArrowUpRight } from "./Icons";
 type Variant = "standard" | "feature" | "tall";
 
 const aspect: Record<Variant, string> = {
-  standard: "aspect-[4/3]",
+  standard: "aspect-[16/11] sm:aspect-[4/3]",
   tall: "aspect-[4/5]",
   feature: "aspect-[4/5] sm:aspect-[16/10]",
 };

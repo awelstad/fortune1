@@ -47,29 +47,37 @@ export function Gallery({ images, name }: { images: ProjectImage[]; name: string
 
   if (!images.length) return null;
   const current = index === null ? null : images[index];
+  // Keep legacy low-resolution photos small enough to stay sharp.
+  const lowRes = images.every((i) => !isHiRes(i, 700));
+  const n = images.length;
+  const layout =
+    n === 1
+      ? lowRes ? "max-w-xl" : ""
+      : n === 2
+        ? lowRes ? "sm:grid-cols-2 lg:max-w-4xl" : "sm:grid-cols-2"
+        : n === 4
+          ? lowRes ? "sm:grid-cols-2 lg:grid-cols-4" : "sm:grid-cols-2"
+          : lowRes ? "sm:grid-cols-3 lg:grid-cols-4" : "sm:grid-cols-2 lg:grid-cols-3";
 
   return (
     <>
-      <ul className="columns-1 gap-4 sm:columns-2 lg:columns-3 [&>li]:mb-4">
+      <ul className={`grid gap-4 ${layout}`}>
         {images.map((img, i) => {
           const src = mediaUrl(img.storage_path)!;
-          const w = img.width ?? 1200;
-          const h = img.height ?? 800;
           return (
-            <li key={img.id} className="break-inside-avoid" data-reveal style={{ ["--reveal-delay" as string]: `${(i % 3) * 80}ms` }}>
+            <li key={img.id} data-reveal style={{ ["--reveal-delay" as string]: `${(i % 3) * 80}ms` }}>
               <button
                 type="button"
                 onClick={(e) => open(i, e.currentTarget)}
-                className={`group relative block w-full overflow-hidden bg-graphite ${isHiRes(img, 600) ? "" : "grain"}`}
+                className={`group relative block aspect-[4/3] w-full overflow-hidden bg-graphite ${isHiRes(img, 600) ? "" : "grain"}`}
                 aria-label={`View image ${i + 1} of ${images.length}${img.alt ? `: ${img.alt}` : ""}`}
               >
                 <Image
                   src={src}
                   alt={img.alt || `${name} — image ${i + 1}`}
-                  width={w}
-                  height={h}
-                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                  className="h-auto w-full transition-transform duration-1000 ease-[var(--ease-out-expo)] group-hover:scale-[1.03]"
+                  fill
+                  sizes={images.length === 1 ? "100vw" : "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"}
+                  className="object-cover transition-transform duration-1000 ease-[var(--ease-out-expo)] group-hover:scale-[1.03]"
                 />
                 <span className="absolute right-3 top-3 grid size-9 place-items-center bg-ink/70 text-white opacity-0 backdrop-blur transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
                   <PlusIcon />

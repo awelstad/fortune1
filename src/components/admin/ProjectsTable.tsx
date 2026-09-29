@@ -117,13 +117,13 @@ export function ProjectsTable({ projects, categories }: { projects: AdminProject
           className="lg:max-w-xs"
           aria-label="Search projects"
         />
-        <Select value={status} onChange={(e) => setStatus(e.target.value as typeof status)} aria-label="Filter by status" className="lg:w-40">
+        <Select value={status} onChange={(e) => setStatus(e.target.value as typeof status)} aria-label="Filter by status" className="lg:w-40!">
           <option value="all">All statuses</option>
           <option value="current">Current</option>
           <option value="upcoming">Upcoming</option>
           <option value="completed">Completed</option>
         </Select>
-        <Select value={category} onChange={(e) => setCategory(e.target.value)} aria-label="Filter by category" className="lg:w-56">
+        <Select value={category} onChange={(e) => setCategory(e.target.value)} aria-label="Filter by category" className="lg:w-56!">
           <option value="all">All industries</option>
           {categories.map((c) => (
             <option key={c.id} value={c.id}>
@@ -131,7 +131,7 @@ export function ProjectsTable({ projects, categories }: { projects: AdminProject
             </option>
           ))}
         </Select>
-        <Select value={visibility} onChange={(e) => setVisibility(e.target.value as typeof visibility)} aria-label="Filter by visibility" className="lg:w-40">
+        <Select value={visibility} onChange={(e) => setVisibility(e.target.value as typeof visibility)} aria-label="Filter by visibility" className="lg:w-40!">
           <option value="all">Active</option>
           <option value="published">Published</option>
           <option value="draft">Drafts</option>
@@ -221,7 +221,7 @@ export function ProjectsTable({ projects, categories }: { projects: AdminProject
                     <Select
                       value={p.status}
                       aria-label={`Status for ${p.name}`}
-                      className="w-32 py-1"
+                      className="w-32! py-1"
                       onChange={(e) => {
                         const s = e.target.value as ProjectStatus;
                         act(() => patchProject(p.id, { status: s }), () => update(p.id, { status: s }));
@@ -236,7 +236,7 @@ export function ProjectsTable({ projects, categories }: { projects: AdminProject
                     <Select
                       value={p.category_id ?? ""}
                       aria-label={`Industry for ${p.name}`}
-                      className="w-48 py-1"
+                      className="w-48! py-1"
                       onChange={(e) => {
                         const c = e.target.value || null;
                         act(() => patchProject(p.id, { category_id: c }), () => update(p.id, { category_id: c }));

@@ -46,6 +46,14 @@ export async function generateMetadata({ params }: PageProps<"/projects/[slug]">
   };
 }
 
+const bandCols: Record<number, string> = {
+  1: "md:grid-cols-2",
+  2: "md:grid-cols-2",
+  3: "md:grid-cols-3",
+  4: "md:grid-cols-4",
+  5: "md:grid-cols-3 xl:grid-cols-5",
+};
+
 function related(all: ProjectWithMedia[], p: ProjectWithMedia, n = 3) {
   const others = all.filter((o) => o.id !== p.id);
   const score = (o: ProjectWithMedia) =>
@@ -77,6 +85,7 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
   const more = related(all, project);
   const bigHero = isHiRes(project.hero, 1000);
   const where = locationOf(project);
+  const tileCount = metrics.length + timeline.length + (project.project_size ? 1 : 0);
 
   return (
     <>
@@ -118,9 +127,16 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
       {(metrics.length > 0 || timeline.length > 0 || project.project_size) && (
         <section aria-label="Project metrics" className="border-b border-rule bg-paper">
           <div className="shell">
-            <dl className="grid grid-cols-2 border-l border-rule md:grid-cols-3 xl:grid-cols-5">
-              {[...metrics, ...timeline].map((m, i) => (
-                <div key={m.key} className="border-b border-r border-rule p-5 sm:p-8" data-reveal style={{ ["--reveal-delay" as string]: `${i * 60}ms` }}>
+            <dl className={`grid grid-cols-2 border-l border-rule ${bandCols[Math.min(tileCount, 5)]}`}>
+              {[...metrics, ...timeline].map((m, i, arr) => (
+                <div
+                  key={m.key}
+                  className={`border-b border-r border-rule p-5 sm:p-8 ${
+                    !project.project_size && i === arr.length - 1 && tileCount % 2 === 1 ? "col-span-2 md:col-span-1" : ""
+                  }`}
+                  data-reveal
+                  style={{ ["--reveal-delay" as string]: `${i * 60}ms` }}
+                >
                   <dt className="sr-only">{m.label}</dt>
                   <dd>
                     <MetricBlock metric={m} size={m.key === "start" || m.key === "end" ? "md" : "lg"} />
@@ -128,7 +144,7 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
                 </div>
               ))}
               {project.project_size && (
-                <div className="col-span-2 border-b border-r border-rule p-5 sm:p-8 md:col-span-1" data-reveal>
+                <div className={`border-b border-r border-rule p-5 sm:p-8 ${tileCount % 2 === 1 ? "col-span-2 md:col-span-1" : ""}`} data-reveal>
                   <dt className="sr-only">Scale</dt>
                   <dd>
                     <MetricBlock metric={{ key: "size", value: project.project_size, label: "Scale" }} />
