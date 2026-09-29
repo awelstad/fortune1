@@ -24,6 +24,7 @@ export function ProjectCard({
   priority = false,
   showStatus = true,
   headingLevel = "h3",
+  fill = false,
 }: {
   project: ProjectWithMedia;
   variant?: Variant;
@@ -31,6 +32,8 @@ export function ProjectCard({
   priority?: boolean;
   showStatus?: boolean;
   headingLevel?: "h2" | "h3";
+  /** Stretch to the parent's height on large screens (editorial grids). */
+  fill?: boolean;
 }) {
   const metrics = cardMetrics(project, variant === "feature" ? 3 : 2);
   const category = project.category?.short_name || project.category?.name;
@@ -39,19 +42,24 @@ export function ProjectCard({
   const isFeature = variant === "feature";
 
   return (
-    <article className="group relative">
+    <article className={`group relative ${fill ? "lg:h-full" : ""}`}>
       <Link
         href={`/projects/${project.slug}`}
-        className="block focus-visible:outline-offset-4"
+        className={`block focus-visible:outline-offset-4 ${fill ? "lg:flex lg:h-full lg:flex-col" : ""}`}
         aria-label={`${project.name} — ${locationOf(project)}`}
       >
-        <div className={`relative overflow-hidden bg-graphite ${aspect[variant]}`}>
+        <div
+          className={`relative overflow-hidden bg-graphite ${aspect[variant]} ${
+            fill ? "lg:aspect-auto lg:min-h-[28rem] lg:flex-1" : ""
+          }`}
+        >
           <ProjectMedia
             image={project.hero}
             alt={project.name}
             sizes={sizes}
             priority={priority}
             hiResWidth={isFeature ? 1000 : 600}
+            placeholderText={category}
           />
           <div
             className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/25 to-ink/10 transition-opacity duration-700 group-hover:opacity-90"

@@ -6,7 +6,7 @@ import { Gallery } from "@/components/site/Gallery";
 import { JsonLd } from "@/components/site/JsonLd";
 import { MetricBlock } from "@/components/site/MetricBlock";
 import { ProjectCard } from "@/components/site/ProjectCard";
-import { ProjectMedia } from "@/components/site/ProjectMedia";
+import { PendingMedia, ProjectMedia } from "@/components/site/ProjectMedia";
 import { StatusBadge } from "@/components/site/StatusBadge";
 import { ArrowRight } from "@/components/site/Icons";
 import { getHomepage, getProject, getProjects, getSite } from "@/lib/data";
@@ -59,7 +59,7 @@ function related(all: ProjectWithMedia[], p: ProjectWithMedia, n = 3) {
   const score = (o: ProjectWithMedia) =>
     (o.category_id && o.category_id === p.category_id ? 4 : 0) +
     (o.status === p.status ? 1 : 0) +
-    (o.hero ? 1 : 0) +
+    (o.hero ? 3 : 0) +
     (o.city && o.city === p.city ? 1 : 0);
   return others
     .map((o) => ({ o, s: score(o) }))
@@ -110,7 +110,7 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
           <div className="absolute inset-0 -z-10 bg-gradient-to-t from-ink via-ink/45 to-ink/30" aria-hidden />
           <HeroText project={project} where={where} />
         </section>
-      ) : (
+      ) : project.hero ? (
         <section className="blueprint relative bg-ink pt-28 text-white sm:pt-36">
           <div className="shell grid gap-10 pb-12 lg:grid-cols-12 lg:items-end lg:pb-16">
             <div className="lg:col-span-7">
@@ -119,6 +119,14 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
             <div className="relative aspect-[4/3] overflow-hidden bg-graphite lg:col-span-5" data-reveal="mask">
               <ProjectMedia image={project.hero} alt={project.name} sizes="(min-width: 1024px) 40vw, 100vw" priority zoom={false} />
             </div>
+          </div>
+        </section>
+      ) : (
+        // No photography yet: a full-width typographic hero rather than an empty frame.
+        <section className="relative isolate overflow-hidden text-white">
+          <PendingMedia hero text={project.category?.short_name || project.category?.name} className="-z-10" />
+          <div className="shell pb-14 pt-32 sm:pb-20 sm:pt-44">
+            <HeroText project={project} where={where} inline />
           </div>
         </section>
       )}
@@ -152,6 +160,25 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
                 </div>
               )}
             </dl>
+          </div>
+        </section>
+      )}
+
+      {/* Nothing documented yet — say so deliberately instead of leaving a gap. */}
+      {metrics.length === 0 && timeline.length === 0 && !project.project_size && body.length === 0 && team.length === 0 && (
+        <section className="border-b border-rule bg-paper">
+          <div className="shell flex flex-col gap-6 py-12 sm:flex-row sm:items-center sm:justify-between sm:py-16">
+            <p className="max-w-xl text-lg leading-relaxed text-mute">
+              Full project details and photography are being prepared. Want to know more about our work on{" "}
+              <span className="text-ink">{project.name}</span>?
+            </p>
+            <Link
+              href="/contact"
+              className="label group inline-flex shrink-0 items-center gap-4 bg-ink px-6 py-5 text-white transition-colors hover:bg-signal"
+            >
+              Talk to our team
+              <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+            </Link>
           </div>
         </section>
       )}

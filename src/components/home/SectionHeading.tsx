@@ -22,14 +22,14 @@ export function SectionHeading({
   const dark = tone === "dark";
   return (
     <div className="grid gap-8 pb-10 sm:pb-14 lg:grid-cols-12 lg:items-end">
-      <div className="lg:col-span-8">
+      <div className="lg:col-span-9">
         {eyebrow && (
           <p className={`label mb-5 flex items-center gap-3 ${dark ? "text-fog" : "text-mute"}`} data-reveal>
             <span className={`h-px w-8 ${dark ? "bg-signal-bright" : "bg-signal"}`} aria-hidden />
             {eyebrow}
           </p>
         )}
-        <h2 id={id} className="font-display text-[clamp(3rem,8vw,8.5rem)] text-balance" data-reveal>
+        <h2 id={id} className="font-display text-[clamp(3rem,7.2vw,7.5rem)] text-balance" data-reveal>
           {title}
           {typeof count === "number" && count > 0 && (
             <sup className={`label ml-3 align-top text-sm tracking-normal ${dark ? "text-fog" : "text-mute"}`}>
@@ -39,7 +39,7 @@ export function SectionHeading({
         </h2>
       </div>
       {(intro || link) && (
-        <div className="lg:col-span-4 lg:pb-3" data-reveal style={{ ["--reveal-delay" as string]: "120ms" }}>
+        <div className="lg:col-span-3 lg:pb-3" data-reveal style={{ ["--reveal-delay" as string]: "120ms" }}>
           {intro && (
             <p className={`max-w-sm text-base leading-relaxed ${dark ? "text-fog" : "text-mute"}`}>{intro}</p>
           )}

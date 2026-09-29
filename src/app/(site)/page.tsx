@@ -11,6 +11,7 @@ import { ClosingCta } from "@/components/site/ClosingCta";
 import { ProjectBrowser } from "@/components/site/ProjectBrowser";
 import { ProjectCard } from "@/components/site/ProjectCard";
 import { getCategories, getHomepage, getProjects, getSite, getStatistics } from "@/lib/data";
+import { best, photoFirst } from "@/lib/rank";
 
 export const revalidate = 300;
 
@@ -29,8 +30,8 @@ export default async function HomePage() {
     projects.find((p) => p.id === home.featured_project_id) ?? projects.find((p) => p.featured) ?? null;
   const current = projects.filter((p) => p.status === "current" && p.id !== featured?.id);
   const upcoming = projects.filter((p) => p.status === "upcoming" && p.id !== featured?.id);
-  const nowBuilding =
-    current[0] ?? (featured?.status === "current" ? featured : null) ?? null;
+  // The hero's "Now Building" card shows the strongest current project, featured included.
+  const nowBuilding = best(projects.filter((p) => p.status === "current"));
 
   const tiles: IndustryTile[] = categories
     .filter((c) => c.show_on_home)
@@ -65,7 +66,7 @@ export default async function HomePage() {
               intro={home.portfolio_intro}
               link={{ href: "/projects", label: "Browse all projects" }}
             />
-            <Suspense fallback={<StaticGrid projects={projects.slice(0, PORTFOLIO_LIMIT)} />}>
+            <Suspense fallback={<StaticGrid projects={photoFirst(projects).slice(0, PORTFOLIO_LIMIT)} />}>
               <ProjectBrowser projects={projects} categories={categories} mode="preview" limit={PORTFOLIO_LIMIT} />
             </Suspense>
           </div>

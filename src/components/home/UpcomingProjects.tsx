@@ -1,8 +1,9 @@
 import type { ProjectWithMedia } from "@/lib/types";
 import { ProjectCard } from "@/components/site/ProjectCard";
+import { ProjectIndex } from "@/components/site/ProjectIndex";
 import { SectionHeading } from "./SectionHeading";
 
-/** Pipeline: horizontally scrollable on phones, grid on desktop. */
+/** Pipeline: photo cards (scrollable on phones) plus a typographic index for the rest. */
 export function UpcomingProjects({
   projects,
   heading,
@@ -13,6 +14,9 @@ export function UpcomingProjects({
   intro: string | null;
 }) {
   if (!projects.length) return null;
+  const withPhotos = projects.filter((p) => p.hero);
+  const withoutPhotos = projects.filter((p) => !p.hero);
+
   return (
     <section aria-labelledby="upcoming-heading" className="border-t border-rule bg-bone py-20 sm:py-28">
       <div className="shell">
@@ -25,21 +29,32 @@ export function UpcomingProjects({
           link={{ href: "/projects?status=upcoming", label: "All upcoming projects" }}
         />
       </div>
-      <div className="scrollbar-none -mb-4 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 pl-4 sm:pl-8 lg:hidden">
-        {projects.map((p) => (
-          <div key={p.id} className="w-[82vw] shrink-0 snap-start sm:w-[44vw]">
-            <ProjectCard project={p} variant="tall" sizes="82vw" />
+
+      {withPhotos.length > 0 && (
+        <>
+          <div className="scrollbar-none -mb-4 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 pl-4 sm:pl-8 lg:hidden">
+            {withPhotos.map((p) => (
+              <div key={p.id} className="w-[82vw] shrink-0 snap-start sm:w-[44vw]">
+                <ProjectCard project={p} variant="tall" sizes="82vw" />
+              </div>
+            ))}
+            <div className="w-1 shrink-0" aria-hidden />
           </div>
-        ))}
-        <div className="w-1 shrink-0" aria-hidden />
-      </div>
-      <div className="shell hidden gap-6 lg:grid lg:grid-cols-3">
-        {projects.map((p, i) => (
-          <div key={p.id} data-reveal style={{ ["--reveal-delay" as string]: `${(i % 3) * 100}ms` }}>
-            <ProjectCard project={p} variant="tall" />
+          <div className="shell hidden gap-6 lg:grid lg:grid-cols-3">
+            {withPhotos.map((p, i) => (
+              <div key={p.id} data-reveal style={{ ["--reveal-delay" as string]: `${(i % 3) * 100}ms` }}>
+                <ProjectCard project={p} variant="tall" />
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      )}
+
+      {withoutPhotos.length > 0 && (
+        <div className={`shell ${withPhotos.length ? "mt-16" : ""}`}>
+          <ProjectIndex projects={withoutPhotos} start={withPhotos.length + 1} />
+        </div>
+      )}
     </section>
   );
 }

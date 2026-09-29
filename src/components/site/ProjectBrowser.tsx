@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import type { Category, ProjectStatus, ProjectWithMedia } from "@/lib/types";
 import { STATUSES } from "@/lib/types";
+import { photoFirst } from "@/lib/rank";
 import { ProjectCard } from "./ProjectCard";
 import { ArrowRight } from "./Icons";
 
@@ -73,7 +74,8 @@ function BrowserInner({
     }
   };
 
-  const results = useMemo(() => projects.filter((p) => matches(p, filters)), [projects, filters]);
+  // Photography leads; admin display order is kept within each group.
+  const results = useMemo(() => photoFirst(projects.filter((p) => matches(p, filters))), [projects, filters]);
 
   // facet counts respect the *other* active filters
   const statusCounts = useMemo(() => {
@@ -178,7 +180,7 @@ function BrowserInner({
         <div
           role="group"
           aria-label="Filter by market"
-          className="scrollbar-none -mx-1 flex gap-2 overflow-x-auto px-1 pb-4"
+          className="scrollbar-none -mx-1 flex gap-2 overflow-x-auto px-1 pb-4 pr-10 [mask-image:linear-gradient(to_right,black_calc(100%-3rem),transparent)]"
         >
           {[{ slug: "all", name: "All Markets", short_name: null }, ...visibleCategories].map((c) => {
             const on = filters.category === c.slug;
