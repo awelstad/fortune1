@@ -30,8 +30,10 @@ export default async function HomePage() {
     projects.find((p) => p.id === home.featured_project_id) ?? projects.find((p) => p.featured) ?? null;
   const current = projects.filter((p) => p.status === "current" && p.id !== featured?.id);
   const upcoming = projects.filter((p) => p.status === "upcoming" && p.id !== featured?.id);
-  // The hero's "Now Building" card shows the strongest current project, featured included.
-  const nowBuilding = best(projects.filter((p) => p.status === "current"));
+  // Hero "Now Building" board: the strongest current project, then the next two in display order.
+  const allCurrent = projects.filter((p) => p.status === "current");
+  const top = best(allCurrent);
+  const nowBuilding = top ? [top, ...allCurrent.filter((p) => p.id !== top.id)].slice(0, 3) : [];
 
   const tiles: IndustryTile[] = categories
     .filter((c) => c.show_on_home)
