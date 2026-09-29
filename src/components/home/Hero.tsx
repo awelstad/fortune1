@@ -5,6 +5,7 @@ import { locationOf, money, squareFeet } from "@/lib/format";
 import { mediaUrl } from "@/lib/media";
 import { ArrowRight, ArrowUpRight } from "@/components/site/Icons";
 import { HeroVideo } from "./HeroVideo";
+import { youtubeId } from "@/lib/youtube";
 
 export function Hero({
   home,
@@ -18,7 +19,9 @@ export function Hero({
   locationLine: string;
 }) {
   const src = mediaUrl(home.hero_image_path);
+  // An uploaded video file takes priority over a YouTube link.
   const video = mediaUrl(home.hero_video_path);
+  const yt = video ? null : youtubeId(home.hero_youtube_url);
 
   return (
     <section className="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-ink text-white">
@@ -35,9 +38,9 @@ export function Hero({
           />
         </div>
       )}
-      {video && (
+      {(video || yt) && (
         <div className="absolute inset-0 -z-20">
-          <HeroVideo src={video} poster={src} />
+          <HeroVideo src={video} youtubeId={yt} poster={src} />
         </div>
       )}
       <div

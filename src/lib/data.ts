@@ -66,6 +66,7 @@ const HOME_DEFAULTS: HomepageSettings = {
   hero_subheadline: null,
   hero_image_path: null,
   hero_video_path: null,
+  hero_youtube_url: null,
   hero_primary_label: "View Our Projects",
   hero_primary_href: "/projects",
   hero_secondary_label: "Let's Work Together",

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { requireAdmin, revalidateSite, run, type ActionResult } from "@/lib/admin/auth";
 import type { AutoSource, Capability } from "@/lib/types";
+import { youtubeId } from "@/lib/youtube";
 
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const AUTO: AutoSource[] = ["manual", "project_count", "square_feet", "units", "project_value", "contract_value"];
@@ -43,7 +44,7 @@ function safeVideoPath(v: string | null) {
 // Homepage
 // ---------------------------------------------------------------------------
 export async function saveHomepage(_prev: ActionResult, form: FormData): Promise<ActionResult> {
-  return run(async () => {
+  return run(async (): Promise<ActionResult> => {
     const { supabase } = await requireAdmin();
     let capabilities: Capability[] = [];
     try {
@@ -62,6 +63,7 @@ export async function saveHomepage(_prev: ActionResult, form: FormData): Promise
       hero_subheadline: text(form, "hero_subheadline", 400),
       hero_image_path: safeMediaPath(text(form, "hero_image_path", 300)),
       hero_video_path: safeVideoPath(text(form, "hero_video_path", 300)),
+      hero_youtube_url: text(form, "hero_youtube_url", 300),
       hero_primary_label: text(form, "hero_primary_label", 60),
       hero_primary_href: safeHref(text(form, "hero_primary_href", 300)),
       hero_secondary_label: text(form, "hero_secondary_label", 60),
@@ -82,6 +84,9 @@ export async function saveHomepage(_prev: ActionResult, form: FormData): Promise
       cta_button_label: text(form, "cta_button_label", 60),
       cta_button_href: safeHref(text(form, "cta_button_href", 300)),
     };
+    if (row.hero_youtube_url && !youtubeId(row.hero_youtube_url)) {
+      return { ok: false, message: "That doesn't look like a YouTube video link.", errors: { hero_youtube_url: "Paste a link like https://youtu.be/…" } };
+    }
     if (!row.hero_headline) return { ok: false, message: "Hero headline is required.", errors: { hero_headline: "Required" } };
 
     const { error } = await supabase.from("homepage_settings").update(row).eq("id", 1);

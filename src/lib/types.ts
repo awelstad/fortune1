@@ -100,6 +100,7 @@ export type HomepageSettings = {
   hero_subheadline: string | null;
   hero_image_path: string | null;
   hero_video_path: string | null;
+  hero_youtube_url: string | null;
   hero_primary_label: string | null;
   hero_primary_href: string | null;
   hero_secondary_label: string | null;

@@ -6,6 +6,7 @@ import type { ActionResult } from "@/lib/admin/auth";
 import type { Capability, HomepageSettings } from "@/lib/types";
 import { SingleImageField } from "./SingleImageField";
 import { VideoField } from "./VideoField";
+import { YouTubeField } from "./YouTubeField";
 import { Button, Card, Field, Input, Select, Textarea } from "./ui";
 
 export function HomepageEditor({
@@ -71,8 +72,16 @@ export function HomepageEditor({
           <Card title="Hero image" description="Full-screen. Use a 2400px+ wide landscape photo of real Fortune work. Also shown while the video loads.">
             <SingleImageField name="hero_image_path" folder="site" initialPath={home.hero_image_path} />
           </Card>
-          <Card title="Hero background video" description="Optional. Plays silently behind the headline.">
+          <Card title="Hero background video" description="Optional. Upload a file, or use a YouTube link below. Plays silently behind the headline.">
             <VideoField name="hero_video_path" initialPath={home.hero_video_path} />
+            <div className="mt-5 border-t border-zinc-100 pt-5">
+              <p className="mb-2 text-xs font-medium text-zinc-700">Or use a YouTube video</p>
+              <YouTubeField
+                name="hero_youtube_url"
+                initialUrl={home.hero_youtube_url}
+                error={!state.ok ? state.errors?.hero_youtube_url : undefined}
+              />
+            </div>
           </Card>
         </div>
       </div>
