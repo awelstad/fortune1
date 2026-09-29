@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { FL_CITIES, FL_PATH, FL_REGIONS, FL_VIEWBOX, projectFL } from "@/lib/florida-map";
 import { cardMetrics, locationOf } from "@/lib/format";
 import type { ProjectWithMedia } from "@/lib/types";
@@ -52,17 +52,27 @@ export function ProjectMap({ projects }: { projects: ProjectWithMedia[] }) {
   // and scale pins/labels with the zoom so they look the same size on screen.
   const view = useMemo(() => {
     const [fx, fy, fw, fh] = FL_VIEWBOX.split(" ").map(Number);
-    if (!pins.length) return { box: FL_VIEWBOX, s: 1 };
+    if (!pins.length) return { box: FL_VIEWBOX, side: fw };
     const xs = pins.map((p) => p.x), ys = pins.map((p) => p.y);
     const size = Math.min(Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)) + 110, fw, fh, Infinity);
     const side = Math.max(size, 300);
     const cx = (Math.max(...xs) + Math.min(...xs)) / 2, cy = (Math.max(...ys) + Math.min(...ys)) / 2;
     const x = Math.min(Math.max(cx - side / 2, fx), fx + fw - side);
     const y = Math.min(Math.max(cy - side / 2, fy), fy + fh - side);
-    return { box: `${x.toFixed(1)} ${y.toFixed(1)} ${side.toFixed(1)} ${side.toFixed(1)}`, s: side / 680 };
+    return { box: `${x.toFixed(1)} ${y.toFixed(1)} ${side.toFixed(1)} ${side.toFixed(1)}`, side };
   }, [pins]);
-  const s = view.s;
-  const radius = (n: number) => (5 + Math.sqrt(n) * 4.2) * s;
+  // Map units per on-screen pixel, so pins and labels keep a readable pixel size at any width.
+  const svgRef = useRef<SVGSVGElement>(null);
+  const [px, setPx] = useState(560);
+  useEffect(() => {
+    const el = svgRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => setPx(Math.max(200, entry.contentRect.width)));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  const s = view.side / px;
+  const radius = (n: number) => (6 + Math.sqrt(n) * 3.4) * s;
 
   // Greedy label placement: biggest cities first, right side then left, skip if it collides.
   const labels = useMemo(() => {
@@ -76,7 +86,7 @@ export function ProjectMap({ projects }: { projects: ProjectWithMedia[] }) {
     for (const p of pins) {
       if (p.projects.length < 2 && p.key !== selected?.key) continue;
       const r = radius(p.projects.length);
-      const w = p.label.length * 8.6 * s, h = 14 * s, gap = 6 * s;
+      const w = p.label.length * 8.4 * s, h = 14 * s, gap = 6 * s;
       const right = { x1: p.x + r + gap, y1: p.y - h / 2, x2: p.x + r + gap + w, y2: p.y + h / 2 };
       const left = { x1: p.x - r - gap - w, y1: p.y - h / 2, x2: p.x - r - gap, y2: p.y + h / 2 };
       if (!hit(right)) {
@@ -99,7 +109,7 @@ export function ProjectMap({ projects }: { projects: ProjectWithMedia[] }) {
     <div className="grid gap-8 pt-8 lg:grid-cols-12 lg:gap-10">
       <div className="lg:col-span-7">
         <div className="blueprint relative overflow-hidden bg-ink p-3 sm:p-6">
-          <svg viewBox={view.box} className="aspect-square h-auto w-full" role="group" aria-label="Map of Fortune Electrical projects in Florida">
+          <svg ref={svgRef} viewBox={view.box} className="aspect-square h-auto w-full" role="group" aria-label="Map of Fortune Electrical projects in Florida">
             <path d={FL_PATH} fill="#151a22" stroke="#6aa5ff" strokeOpacity="0.55" strokeWidth={1.2 * s} strokeLinejoin="round" />
             {pins.map((pin) => {
               const r = radius(pin.projects.length);
@@ -136,7 +146,7 @@ export function ProjectMap({ projects }: { projects: ProjectWithMedia[] }) {
                   <text
                     textAnchor="middle"
                     dominantBaseline="central"
-                    fontSize={(r > 11 * s ? 11 : 9) * s}
+                    fontSize={(r > 13 * s ? 12 : 10.5) * s}
                     fontWeight="700"
                     fill={on ? "#07090d" : "#ffffff"}
                     style={{ fontFamily: "var(--font-mona)", pointerEvents: "none" }}
@@ -148,7 +158,7 @@ export function ProjectMap({ projects }: { projects: ProjectWithMedia[] }) {
                       x={anchor === "start" ? r + 6 * s : -(r + 6 * s)}
                       textAnchor={anchor}
                       dominantBaseline="central"
-                      fontSize={13 * s}
+                      fontSize={12 * s}
                       fill="#ffffff"
                       fillOpacity={on ? 1 : 0.75}
                       style={{ fontFamily: "var(--font-geist-mono)", letterSpacing: "0.08em", textTransform: "uppercase", pointerEvents: "none" }}
