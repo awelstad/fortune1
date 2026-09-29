@@ -19,7 +19,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
         <div className="flex h-full flex-col">
           <div className="flex items-center justify-between px-5 py-4 lg:py-6">
             <Link href="/admin" aria-label="Admin home">
-              <Image src="/brand/fortune-logo-light.png" alt="Fortune" width={500} height={100} className="h-7 w-auto" />
+              <Image src="/brand/fortune-logo-light.svg" alt="Fortune" width={868} height={207} className="h-7 w-auto" />
             </Link>
             <Link href="/" target="_blank" className="text-xs text-zinc-400 hover:text-white lg:hidden">
               View site ↗

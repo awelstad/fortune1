@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-95 -95 190 190" role="img" aria-label="Fortune Electrical">
+  <defs><radialGradient id="fm-s" cx="0.36" cy="0.3" r="0.78" fx="0.34" fy="0.26">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.22" stop-color="#dfe3e8"/>
+      <stop offset="0.62" stop-color="#8c949e"/>
+      <stop offset="1" stop-color="#3e444c"/>
+    </radialGradient></defs>
+  <g fill="none" stroke="#4f9a6a" stroke-width="5">
+      <ellipse rx="89" ry="20" transform="rotate(28)"/>
+      <ellipse rx="89" ry="20" transform="rotate(-28)"/>
+    </g>
+    <circle r="50" fill="url(#fm-s)"/>
+    <g fill="#4f9a6a">
+      <circle cx="-69.34" cy="-45.36" r="8.5"/>
+      <circle cx="69.34" cy="-45.36" r="8.5"/>
+    </g>
+</svg>

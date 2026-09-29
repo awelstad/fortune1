@@ -32,11 +32,11 @@ export function SiteFooter({ site, categories }: { site: SiteSettings; categorie
       <div className="shell grid gap-12 py-16 md:grid-cols-12">
         <div className="md:col-span-4">
           <Image
-            src="/brand/fortune-logo-light.png"
+            src="/brand/fortune-logo-light.svg"
             alt={site.company_name}
-            width={500}
-            height={100}
-            className="h-10 w-auto"
+            width={868}
+            height={207}
+            className="h-12 w-auto"
           />
           {site.tagline && <p className="mt-6 max-w-sm text-sm leading-relaxed text-fog">{site.tagline}</p>}
           {site.service_area && <p className="label mt-6 text-white/60">{site.service_area}</p>}

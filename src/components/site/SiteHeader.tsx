@@ -71,12 +71,12 @@ export function SiteHeader({ phone }: { phone: string | null }) {
       <div className="shell flex h-16 items-center justify-between gap-6 sm:h-20">
         <Link href="/" className="relative z-10 shrink-0" aria-label="Fortune Electrical Construction — home">
           <Image
-            src="/brand/fortune-logo-light.png"
+            src="/brand/fortune-logo-light.svg"
             alt="Fortune Electrical Construction"
-            width={500}
-            height={100}
+            width={868}
+            height={207}
             priority
-            className="h-8 w-auto sm:h-10"
+            className="h-9 w-auto sm:h-11"
           />
         </Link>
 
