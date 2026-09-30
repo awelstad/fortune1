@@ -53,7 +53,6 @@ export async function saveLocal(local: LocalInfo): Promise<ActionResult> {
       areas: (local.areas ?? []).map((a) => str(a, 80)).filter((a): a is string => !!a).slice(0, 20),
       geo: Number.isFinite(lat) && Number.isFinite(lng) && lat > 24 && lat < 32 && lng > -88 && lng < -79 ? { lat, lng } : undefined,
       gbp_url: url(local.gbp_url),
-      linkedin_url: url(local.linkedin_url),
       verification: {
         google: (str(local.verification?.google, 100) ?? "").replace(/[^\w-]/g, ""),
         bing: (str(local.verification?.bing, 100) ?? "").replace(/[^\w-]/g, ""),

@@ -128,6 +128,7 @@ const SITE_DEFAULTS: SiteSettings = {
   prequal: {},
   safety: {},
   local: {},
+  photo_strip: {},
 };
 
 export const getSite = cache(async (): Promise<SiteSettings> => {

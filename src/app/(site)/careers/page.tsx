@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { CareersBoard } from "@/components/site/CareersBoard";
 import { JsonLd } from "@/components/site/JsonLd";
+import { SitePhotoStrip } from "@/components/site/SitePhotoStrip";
 import { getJobs, getSite } from "@/lib/data";
 import { SITE_URL } from "@/lib/site-url";
 import { pageMeta } from "@/lib/seo";
@@ -88,6 +89,7 @@ export default async function CareersPage() {
         </div>
       </section>
 
+      <SitePhotoStrip site={site} page="careers" />
       <CareersBoard jobs={jobs} phone={site.phone} />
     </>
   );

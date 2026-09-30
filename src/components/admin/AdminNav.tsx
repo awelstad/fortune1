@@ -7,6 +7,7 @@ const ITEMS = [
   { href: "/admin", label: "Dashboard", exact: true },
   { href: "/admin/traffic", label: "Traffic" },
   { href: "/admin/seo", label: "SEO" },
+  { href: "/admin/social", label: "Social & Instagram" },
   { href: "/admin/projects", label: "Projects" },
   { href: "/admin/homepage", label: "Homepage" },
   { href: "/admin/statistics", label: "Statistics" },

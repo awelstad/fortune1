@@ -12,6 +12,9 @@ const nextConfig: NextConfig = {
         hostname: supabaseHost,
         pathname: "/storage/v1/object/public/media/**",
       },
+      // Instagram post images for the optional photo strip (src/lib/photo-strip.ts).
+      { protocol: "https", hostname: "**.cdninstagram.com" },
+      { protocol: "https", hostname: "**.fbcdn.net" },
     ],
     formats: ["image/avif", "image/webp"],
     qualities: [60, 75, 85],

@@ -189,6 +189,36 @@
   clip-path: inset(0 0 0 0);
 }
 
+/* ---------------------------------------------------------------------------
+   Photo strip — seamless marquee (track holds the photo set twice)
+--------------------------------------------------------------------------- */
+@keyframes photo-strip {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.photo-strip {
+  mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+}
+.photo-strip-track {
+  animation: photo-strip var(--strip-duration, 60s) linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* No movement: a swipeable row of the photos, shown once. */
+  .photo-strip {
+    overflow-x: auto;
+    mask-image: none;
+  }
+  .photo-strip-track {
+    animation: none !important;
+    padding-inline: 1rem;
+  }
+  .photo-strip-track [data-copy] {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

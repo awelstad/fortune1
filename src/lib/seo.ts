@@ -36,7 +36,7 @@ const DAY: Record<string, string> = {
 /** Organization / local business structured data (schema.org Electrician). */
 export function localBusinessLd(site: SiteSettings) {
   const local = site.local ?? {};
-  const sameAs = [local.gbp_url, local.linkedin_url, ...Object.values(site.social_links ?? {})].filter(
+  const sameAs = [local.gbp_url, ...Object.values(site.social_links ?? {})].filter(
     (u): u is string => !!u && /^https?:\/\//.test(u),
   );
   return {

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useTransition } from "react";
 import { saveLocal } from "@/app/admin/(panel)/seo/actions";
 import type { LocalInfo } from "@/lib/types";
@@ -87,9 +88,13 @@ export function LocalEditor({ initial }: { initial: LocalInfo }) {
             <Field label="Google Business Profile URL" htmlFor="gbp" hint="On Google Maps: your listing → Share → Copy link.">
               <Input id="gbp" type="url" placeholder="https://maps.app.goo.gl/…" value={l.gbp_url ?? ""} onChange={(e) => setL({ ...l, gbp_url: e.target.value })} />
             </Field>
-            <Field label="LinkedIn" htmlFor="li">
-              <Input id="li" type="url" value={l.linkedin_url ?? ""} onChange={(e) => setL({ ...l, linkedin_url: e.target.value })} />
-            </Field>
+            <p className="text-xs text-zinc-500">
+              LinkedIn, Facebook and Instagram links are managed in{" "}
+              <Link href="/admin/social" className="text-signal hover:underline">
+                Social &amp; Instagram
+              </Link>
+              .
+            </p>
           </div>
         </Card>
 

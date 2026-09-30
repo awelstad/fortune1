@@ -70,15 +70,6 @@ export function SettingsForm({ site }: { site: SiteSettings }) {
             </Field>
           </div>
         </Card>
-        <Card title="Social links">
-          <div className="grid gap-4">
-            {["linkedin", "facebook", "instagram", "youtube"].map((k) => (
-              <Field key={k} label={k[0].toUpperCase() + k.slice(1)} htmlFor={`social_${k}`}>
-                <Input id={`social_${k}`} name={`social_${k}`} type="url" placeholder="https://" defaultValue={site.social_links?.[k] ?? ""} />
-              </Field>
-            ))}
-          </div>
-        </Card>
       </div>
       <div className="flex items-center gap-4">
         <Button type="submit" disabled={pending}>

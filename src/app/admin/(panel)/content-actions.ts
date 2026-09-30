@@ -234,12 +234,6 @@ export async function saveSiteSettings(_prev: ActionResult, form: FormData): Pro
     const email = text(form, "email", 200);
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { ok: false, message: "Invalid email.", errors: { email: "Invalid email" } };
 
-    const social: Record<string, string> = {};
-    for (const k of ["linkedin", "facebook", "instagram", "youtube"]) {
-      const v = safeHref(text(form, `social_${k}`, 300));
-      if (v) social[k] = v;
-    }
-
     const { error } = await supabase
       .from("site_settings")
       .update({
@@ -257,7 +251,6 @@ export async function saveSiteSettings(_prev: ActionResult, form: FormData): Pro
         service_area: text(form, "service_area", 160),
         default_seo_title: text(form, "default_seo_title", 120),
         default_seo_description: text(form, "default_seo_description", 300),
-        social_links: social,
       })
       .eq("id", 1);
     if (error) throw error;

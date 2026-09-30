@@ -144,7 +144,20 @@ export type SiteSettings = {
   prequal: Prequal;
   safety: Safety;
   local: LocalInfo;
+  photo_strip: PhotoStrip;
 };
+
+export type StripPage = "home" | "careers";
+
+/** Optional scrolling photo bar. Off by default. */
+export type PhotoStrip = {
+  enabled?: boolean;
+  source?: "instagram" | "projects";
+  heading?: string;
+  pages?: StripPage[];
+};
+
+export type StripPhoto = { id: string; src: string; alt: string; href: string; external: boolean };
 
 /** Prequalification facts — every field optional; blank fields are hidden. */
 export type Prequal = {
@@ -246,6 +259,5 @@ export type LocalInfo = {
   areas?: string[];
   geo?: { lat: number; lng: number };
   gbp_url?: string;
-  linkedin_url?: string;
   verification?: { google?: string; bing?: string };
 };

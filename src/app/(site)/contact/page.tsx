@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ContactForm } from "@/components/site/ContactForm";
+import { SOCIAL_KEYS, SocialLinks } from "@/components/site/SocialLinks";
 import { getSite } from "@/lib/data";
 import { pageMeta } from "@/lib/seo";
 
@@ -82,6 +83,12 @@ export default async function ContactPage() {
                     </div>
                   ))}
                 </dl>
+              </div>
+            )}
+            {SOCIAL_KEYS.some((k) => site.social_links?.[k]) && (
+              <div>
+                <h2 className="label border-b border-ink pb-3">Follow</h2>
+                <SocialLinks links={site.social_links} className="-ml-3 mt-3 text-ink" />
               </div>
             )}
           </aside>

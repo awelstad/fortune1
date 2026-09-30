@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { LandingPage, SiteSettings } from "@/lib/types";
+import { SocialLinks } from "./SocialLinks";
 
 export function SiteFooter({
   site,
@@ -75,6 +76,7 @@ export function SiteFooter({
             )}
             {site.license_numbers && <p className="label text-white/50">License {site.license_numbers}</p>}
           </address>
+          <SocialLinks links={site.social_links ?? {}} className="-ml-3 mt-5 text-white" />
         </div>
 
         <FooterList title="Services" links={services.map((s) => [`/services/${s.slug}`, s.name])} className="md:col-span-2" />

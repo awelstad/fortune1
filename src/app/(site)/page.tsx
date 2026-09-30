@@ -13,6 +13,7 @@ import { ProjectBrowser } from "@/components/site/ProjectBrowser";
 import { ProjectCard } from "@/components/site/ProjectCard";
 import { getCategories, getHomepage, getLandingPages, getProjects, getSite, getStatistics, getTestimonials } from "@/lib/data";
 import { GcBand } from "@/components/home/GcBand";
+import { SitePhotoStrip } from "@/components/site/SitePhotoStrip";
 import { safetyFacts } from "@/lib/format";
 import { best, photoFirst } from "@/lib/rank";
 import { pageMeta } from "@/lib/seo";
@@ -93,6 +94,7 @@ export default async function HomePage() {
       />
       <Industries heading={home.industries_heading ?? "Industries"} intro={home.industries_intro} tiles={tiles} />
       <GcBand testimonials={testimonials} safety={safetyFacts(site.safety ?? {})} />
+      <SitePhotoStrip site={site} page="home" />
       <ClosingCta
         heading={home.cta_heading}
         subheading={home.cta_subheading}
