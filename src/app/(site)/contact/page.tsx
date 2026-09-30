@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
 import { ContactForm } from "@/components/site/ContactForm";
 import { getSite } from "@/lib/data";
+import { pageMeta } from "@/lib/seo";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description: "Talk to Fortune Electrical Construction about your next commercial electrical project in Florida.",
-  alternates: { canonical: "/contact" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMeta("/contact");
+}
 
 export default async function ContactPage() {
   const site = await getSite();
   const tel = site.phone?.replace(/[^\d+]/g, "");
   const cityLine = [site.city, [site.state, site.postal_code].filter(Boolean).join(" ")].filter(Boolean).join(", ");
+  const hours = site.local?.hours ?? [];
 
   return (
     <>
@@ -59,6 +59,29 @@ export default async function ContactPage() {
                   <br />
                   {cityLine}
                 </address>
+                <a
+                  href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${site.company_name}, ${site.address_line1}, ${cityLine}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="label mt-4 inline-flex min-h-11 items-center gap-2 border-b border-ink/30 pb-1 hover:border-ink"
+                >
+                  Get directions ↗
+                </a>
+              </div>
+            )}
+            {hours.length > 0 && (
+              <div>
+                <h2 className="label border-b border-ink pb-3">Office hours</h2>
+                <dl className="mt-4 space-y-1.5">
+                  {hours.map((h) => (
+                    <div key={h.days.join()} className="flex justify-between gap-6">
+                      <dt>{dayRange(h.days)}</dt>
+                      <dd className="text-mute">
+                        {fmtTime(h.opens)} – {fmtTime(h.closes)}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
               </div>
             )}
           </aside>
@@ -66,4 +89,15 @@ export default async function ContactPage() {
       </section>
     </>
   );
+}
+
+function fmtTime(t: string) {
+  const [h, m] = t.split(":").map(Number);
+  const suffix = h >= 12 ? "PM" : "AM";
+  return `${((h + 11) % 12) + 1}:${String(m).padStart(2, "0")} ${suffix}`;
+}
+
+function dayRange(days: string[]) {
+  const short = days.map((d) => d.slice(0, 3));
+  return short.length > 2 ? `${short[0]}–${short[short.length - 1]}` : short.join(", ");
 }

@@ -6,15 +6,13 @@ import { ProjectCard } from "@/components/site/ProjectCard";
 import { ClosingCta } from "@/components/site/ClosingCta";
 import { getCategories, getHomepage, getProjects, getSite } from "@/lib/data";
 import { compactNumber, fullNumber } from "@/lib/format";
+import { pageMeta } from "@/lib/seo";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
-  title: "Projects",
-  description:
-    "Current, upcoming and completed commercial electrical projects by Fortune Electrical Construction — aviation, education, government, senior living, multifamily and more across Florida.",
-  alternates: { canonical: "/projects" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMeta("/projects");
+}
 
 export default async function ProjectsPage() {
   const [projects, categories, site, home] = await Promise.all([

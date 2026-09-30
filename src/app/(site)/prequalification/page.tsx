@@ -4,15 +4,13 @@ import { PrequalForm } from "@/components/site/PrequalForm";
 import { ArrowRight } from "@/components/site/Icons";
 import { getSite, getStatistics } from "@/lib/data";
 import { DEFAULT_PREQUAL_DOCS, safetyFacts } from "@/lib/format";
+import { pageMeta } from "@/lib/seo";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
-  title: "Prequalification",
-  description:
-    "Prequalification information for general contractors: licensing, insurance, bonding and safety record for Fortune Electrical Construction.",
-  alternates: { canonical: "/prequalification" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMeta("/prequalification");
+}
 
 export default async function PrequalPage() {
   const [site, stats] = await Promise.all([getSite(), getStatistics()]);

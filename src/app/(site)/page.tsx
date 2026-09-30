@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Hero } from "@/components/home/Hero";
 import { StatsBand } from "@/components/home/StatsBand";
@@ -10,24 +11,31 @@ import { SectionHeading } from "@/components/home/SectionHeading";
 import { ClosingCta } from "@/components/site/ClosingCta";
 import { ProjectBrowser } from "@/components/site/ProjectBrowser";
 import { ProjectCard } from "@/components/site/ProjectCard";
-import { getCategories, getHomepage, getProjects, getSite, getStatistics, getTestimonials } from "@/lib/data";
+import { getCategories, getHomepage, getLandingPages, getProjects, getSite, getStatistics, getTestimonials } from "@/lib/data";
 import { GcBand } from "@/components/home/GcBand";
 import { safetyFacts } from "@/lib/format";
 import { best, photoFirst } from "@/lib/rank";
+import { pageMeta } from "@/lib/seo";
 
 export const revalidate = 300;
+
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMeta("/");
+}
 
 const PORTFOLIO_LIMIT = 9;
 
 export default async function HomePage() {
-  const [home, site, projects, categories, stats, testimonials] = await Promise.all([
+  const [home, site, projects, categories, stats, testimonials, marketPages] = await Promise.all([
     getHomepage(),
     getSite(),
     getProjects(),
     getCategories(),
     getStatistics(),
     getTestimonials(),
+    getLandingPages("market"),
   ]);
+  const marketSlugs = new Set(marketPages.map((m) => m.slug));
 
   const featured =
     projects.find((p) => p.id === home.featured_project_id) ?? projects.find((p) => p.featured) ?? null;
@@ -46,7 +54,7 @@ export default async function HomePage() {
       const image = c.image_path
         ? { id: c.id, project_id: "", storage_path: c.image_path, width: 1600, height: 1000, alt: "", caption: null, sort_order: 0 }
         : (best?.hero ?? null);
-      return { ...c, count: inCat.length, image };
+      return { ...c, count: inCat.length, image, href: marketSlugs.has(c.slug) ? `/markets/${c.slug}` : undefined };
     })
     .filter((t) => t.count > 0);
 

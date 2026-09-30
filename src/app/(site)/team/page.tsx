@@ -5,15 +5,13 @@ import { getSite, getTeam } from "@/lib/data";
 import { mediaUrl } from "@/lib/media";
 import type { TeamMember } from "@/lib/types";
 import { ArrowRight, ArrowUpRight } from "@/components/site/Icons";
+import { pageMeta } from "@/lib/seo";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
-  title: "Our Team",
-  description:
-    "Meet the leadership, project management, estimating and sales team behind Fortune Electrical Construction.",
-  alternates: { canonical: "/team" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMeta("/team");
+}
 
 export default async function TeamPage() {
   const [team, site] = await Promise.all([getTeam(), getSite()]);

@@ -23,7 +23,7 @@ export default async function PrivacyPage() {
       p: [
         "Information you choose to send us through this website: your name, company, email address, phone number and the details you enter in our contact, bid invitation, prequalification request and job application forms.",
         "Files you choose to upload, such as a resume or bid documents.",
-        "Basic, anonymous usage statistics (pages visited, device type, approximate country) to understand how the site is used. We do not use advertising cookies or sell your information.",
+        "Basic, anonymous usage statistics (pages visited, referring website, device type and approximate city) to understand how the site is used. We don’t use cookies for this, don’t store IP addresses, don’t use advertising cookies and never sell your information.",
       ],
     },
     {

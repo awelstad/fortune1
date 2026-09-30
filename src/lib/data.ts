@@ -11,6 +11,9 @@ import type {
   ProjectImage,
   ProjectWithMedia,
   SiteSettings,
+  LandingKind,
+  LandingPage,
+  SeoPage,
   TeamMember,
   Testimonial,
 } from "./types";
@@ -124,6 +127,7 @@ const SITE_DEFAULTS: SiteSettings = {
   affiliations: [],
   prequal: {},
   safety: {},
+  local: {},
 };
 
 export const getSite = cache(async (): Promise<SiteSettings> => {
@@ -208,3 +212,42 @@ export const getTestimonials = cache(async (): Promise<Testimonial[]> => {
   logError("getTestimonials", error);
   return (data as Testimonial[] | null) ?? [];
 });
+
+export const getLandingPages = cache(async (kind?: LandingKind): Promise<LandingPage[]> => {
+  let q = createPublicClient().from("landing_pages").select("*").eq("published", true);
+  if (kind) q = q.eq("kind", kind);
+  const { data, error } = await q.order("sort_order").order("name");
+  logError("getLandingPages", error);
+  return (data as LandingPage[] | null) ?? [];
+});
+
+export const getLandingPage = cache(async (kind: LandingKind, slug: string): Promise<LandingPage | null> => {
+  const pages = await getLandingPages(kind);
+  return pages.find((p) => p.slug === slug) ?? null;
+});
+
+export const getSeoPages = cache(async (): Promise<Record<string, SeoPage>> => {
+  const { data, error } = await createPublicClient().from("seo_pages").select("path, title, description, noindex");
+  logError("getSeoPages", error);
+  return Object.fromEntries(((data as SeoPage[] | null) ?? []).map((p) => [p.path, p]));
+});
+
+/** Projects that belong on a landing page (OR across its match rules), photo-first. */
+export function matchProjects(page: Pick<LandingPage, "match">, projects: ProjectWithMedia[]): ProjectWithMedia[] {
+  const m = page.match ?? {};
+  const cats = new Set(m.categories ?? []);
+  const cities = new Set(m.cities ?? []);
+  const labels = new Set(m.labels ?? []);
+  const words = (m.scope ?? []).map((w) => w.toLowerCase());
+  const hits = projects.filter((p) => {
+    if (p.category && cats.has(p.category.slug)) return true;
+    if (p.city && cities.has(p.city)) return true;
+    if (p.location_label && labels.has(p.location_label)) return true;
+    if (words.length) {
+      const hay = [p.name, p.summary, p.description, ...(p.scope ?? [])].join(" ").toLowerCase();
+      if (words.some((w) => hay.includes(w))) return true;
+    }
+    return false;
+  });
+  return [...hits.filter((p) => p.hero), ...hits.filter((p) => !p.hero)];
+}

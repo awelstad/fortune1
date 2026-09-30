@@ -4,7 +4,7 @@ import { ProjectMedia } from "@/components/site/ProjectMedia";
 import { ArrowUpRight } from "@/components/site/Icons";
 import { SectionHeading } from "./SectionHeading";
 
-export type IndustryTile = Category & { count: number; image: ProjectImage | null };
+export type IndustryTile = Category & { count: number; image: ProjectImage | null; href?: string };
 
 export function Industries({
   heading,
@@ -30,7 +30,7 @@ export function Industries({
             style={{ ["--reveal-delay" as string]: `${(i % 3) * 90}ms` }}
           >
             <Link
-              href={`/projects?category=${t.slug}`}
+              href={t.href ?? `/projects?category=${t.slug}`}
               className="group relative block aspect-[4/5] overflow-hidden bg-graphite text-white lg:aspect-[5/4]"
             >
               <ProjectMedia image={t.image} alt="" sizes="(min-width: 1024px) 33vw, 78vw" hiResWidth={700} />

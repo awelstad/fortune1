@@ -143,6 +143,7 @@ export type SiteSettings = {
   affiliations: Affiliation[];
   prequal: Prequal;
   safety: Safety;
+  local: LocalInfo;
 };
 
 /** Prequalification facts — every field optional; blank fields are hidden. */
@@ -215,4 +216,36 @@ export type JobOpening = {
   description: string | null;
   sort_order: number;
   is_active: boolean;
+  created_at?: string;
+};
+
+export type LandingKind = "service" | "market" | "area";
+
+export type LandingPage = {
+  id: string;
+  kind: LandingKind;
+  slug: string;
+  name: string;
+  headline: string | null;
+  seo_title: string | null;
+  seo_description: string | null;
+  intro: string | null;
+  body: string | null;
+  faqs: { q: string; a: string }[];
+  match: { categories?: string[]; scope?: string[]; cities?: string[]; labels?: string[] };
+  sort_order: number;
+  published: boolean;
+  updated_at: string;
+};
+
+export type SeoPage = { path: string; title: string | null; description: string | null; noindex: boolean };
+
+export type LocalInfo = {
+  hours?: { days: string[]; opens: string; closes: string }[];
+  hours_source?: string;
+  areas?: string[];
+  geo?: { lat: number; lng: number };
+  gbp_url?: string;
+  linkedin_url?: string;
+  verification?: { google?: string; bing?: string };
 };

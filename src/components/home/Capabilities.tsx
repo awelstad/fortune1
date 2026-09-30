@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { Capability } from "@/lib/types";
 import { mediaUrl } from "@/lib/media";
 
@@ -29,6 +30,12 @@ export function Capabilities({
               One team for power distribution, lighting and emergency systems — from preconstruction
               through commissioning.
             </p>
+            <Link
+              href="/services"
+              className="label group mt-6 inline-flex items-center gap-3 border-b border-white/30 pb-1.5 pt-3 text-white hover:border-white"
+            >
+              All services <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
+            </Link>
             {src && (
               <div className="grain relative mt-10 hidden aspect-[16/10] overflow-hidden lg:block" data-reveal="mask">
                 <Image src={src} alt="Fortune electricians on an active commercial job site" fill sizes="40vw" className="object-cover" />

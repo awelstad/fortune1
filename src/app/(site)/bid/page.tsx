@@ -3,15 +3,13 @@ import Link from "next/link";
 import { BidForm } from "@/components/site/BidForm";
 import { ArrowRight } from "@/components/site/Icons";
 import { getCategories, getSite } from "@/lib/data";
+import { pageMeta } from "@/lib/seo";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
-  title: "Invite Us to Bid",
-  description:
-    "General contractors: send Fortune Electrical Construction your bid invitation — commercial, institutional and multifamily electrical work across Florida.",
-  alternates: { canonical: "/bid" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMeta("/bid");
+}
 
 const STEPS = [
   ["We confirm", "We confirm receipt and assign an estimator to your project."],

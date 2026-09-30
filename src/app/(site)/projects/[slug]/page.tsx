@@ -9,7 +9,7 @@ import { ProjectCard } from "@/components/site/ProjectCard";
 import { PendingMedia, ProjectMedia } from "@/components/site/ProjectMedia";
 import { StatusBadge } from "@/components/site/StatusBadge";
 import { ArrowRight } from "@/components/site/Icons";
-import { getHomepage, getProject, getProjects, getSite } from "@/lib/data";
+import { getHomepage, getLandingPages, getProject, getProjects, getSite } from "@/lib/data";
 import { locationOf, paragraphs, projectMetrics, projectTimeline } from "@/lib/format";
 import { isHiRes, mediaUrl } from "@/lib/media";
 import { SITE_URL } from "@/lib/site-url";
@@ -27,10 +27,12 @@ export async function generateMetadata({ params }: PageProps<"/projects/[slug]">
   const p = await getProject(slug);
   if (!p) return { title: "Project not found" };
   const where = locationOf(p);
+  const market = p.category?.name ? `${p.category.name.toLowerCase()} ` : "";
   const description =
     p.seo_description ||
-    p.summary ||
-    `${p.name} in ${where} — ${p.category?.name ?? "commercial"} electrical construction by Fortune Electrical.`;
+    (p.summary
+      ? `${p.summary} Electrical by Fortune Electrical Construction, a commercial electrical contractor in ${where}.`
+      : `${p.name} in ${where} — ${market}electrical construction by Fortune Electrical, a commercial electrical contractor serving Southwest Florida.`);
   const image = mediaUrl(p.hero?.storage_path);
   return {
     title: p.seo_title || `${p.name} — ${where}`,
@@ -70,8 +72,24 @@ function related(all: ProjectWithMedia[], p: ProjectWithMedia, n = 3) {
 
 export default async function ProjectPage({ params }: PageProps<"/projects/[slug]">) {
   const { slug } = await params;
-  const [project, all, site, home] = await Promise.all([getProject(slug), getProjects(), getSite(), getHomepage()]);
+  const [project, all, site, home, markets, areas] = await Promise.all([
+    getProject(slug),
+    getProjects(),
+    getSite(),
+    getHomepage(),
+    getLandingPages("market"),
+    getLandingPages("area"),
+  ]);
   if (!project) notFound();
+  // Internal links to the market and city landing pages this project belongs to.
+  const marketPage = markets.find((m) => project.category && m.match.categories?.includes(project.category.slug));
+  const areaPage = areas.find(
+    (a) => (project.city && a.match.cities?.includes(project.city)) || (project.location_label && a.match.labels?.includes(project.location_label)),
+  );
+  const explore = [
+    marketPage && { href: `/markets/${marketPage.slug}`, label: `More ${marketPage.name} projects` },
+    areaPage && { href: `/service-areas/${areaPage.slug}`, label: `Electrical contractor in ${areaPage.name}` },
+  ].filter((x): x is { href: string; label: string } => !!x);
 
   const metrics = projectMetrics(project);
   const timeline = projectTimeline(project);
@@ -184,7 +202,7 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
       )}
 
       {/* STORY + SCOPE + TEAM */}
-      {(body.length > 0 || project.scope.length > 0 || team.length > 0) && (
+      {(body.length > 0 || project.scope.length > 0 || team.length > 0 || explore.length > 0) && (
         <section className="bg-paper py-20 sm:py-28">
           <div className="shell grid gap-14 lg:grid-cols-12">
             <div className="lg:col-span-7">
@@ -218,6 +236,20 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
                     ))}
                   </ul>
                 </div>
+              )}
+              {explore.length > 0 && (
+                <nav aria-label="Explore" data-reveal>
+                  <h2 className="label border-b border-ink pb-3 text-ink">Explore</h2>
+                  <ul>
+                    {explore.map((x) => (
+                      <li key={x.href}>
+                        <Link href={x.href} className="flex min-h-12 items-center justify-between border-b border-rule py-3 hover:text-signal">
+                          {x.label} <ArrowRight className="size-4" />
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
               )}
               {team.length > 0 && (
                 <div data-reveal>

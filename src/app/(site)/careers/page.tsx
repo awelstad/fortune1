@@ -3,15 +3,13 @@ import { CareersBoard } from "@/components/site/CareersBoard";
 import { JsonLd } from "@/components/site/JsonLd";
 import { getJobs, getSite } from "@/lib/data";
 import { SITE_URL } from "@/lib/site-url";
+import { pageMeta } from "@/lib/seo";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
-  title: "Careers",
-  description:
-    "Electrician, apprentice, foreman, estimator and project manager jobs at Fortune Electrical Construction in Florida. Apply online.",
-  alternates: { canonical: "/careers" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMeta("/careers");
+}
 
 // Drawn from Fortune's own description of how it treats its workforce.
 const REASONS = [
@@ -34,6 +32,7 @@ export default async function CareersPage() {
             title: j.title,
             description: j.description || j.summary || j.title,
             employmentType: j.employment_type === "Part-time" ? "PART_TIME" : "FULL_TIME",
+            datePosted: j.created_at?.slice(0, 10),
             hiringOrganization: { "@type": "Organization", name: site.company_name, sameAs: SITE_URL },
             jobLocation: {
               "@type": "Place",

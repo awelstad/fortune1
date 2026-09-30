@@ -1,8 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { Category, SiteSettings } from "@/lib/types";
+import type { LandingPage, SiteSettings } from "@/lib/types";
 
-export function SiteFooter({ site, categories }: { site: SiteSettings; categories: Category[] }) {
+export function SiteFooter({
+  site,
+  services,
+  markets,
+  areas,
+}: {
+  site: SiteSettings;
+  services: LandingPage[];
+  markets: LandingPage[];
+  areas: LandingPage[];
+}) {
   const tel = site.phone?.replace(/[^\d+]/g, "");
   const cityLine = [site.city, [site.state, site.postal_code].filter(Boolean).join(" ")].filter(Boolean).join(", ");
 
@@ -39,49 +49,7 @@ export function SiteFooter({ site, categories }: { site: SiteSettings; categorie
             className="h-12 w-auto"
           />
           {site.tagline && <p className="mt-6 max-w-sm text-sm leading-relaxed text-fog">{site.tagline}</p>}
-          {site.service_area && <p className="label mt-6 text-white/60">{site.service_area}</p>}
-        </div>
-
-        <div className="md:col-span-3">
-          <h2 className="label text-fog">Projects</h2>
-          <ul className="mt-4 text-sm sm:mt-5 sm:space-y-2.5">
-            <li>
-              <Link className="block py-2 text-white/80 hover:text-white sm:inline sm:py-0" href="/projects">
-                All Projects
-              </Link>
-            </li>
-            {categories.slice(0, 7).map((c) => (
-              <li key={c.id}>
-                <Link className="block py-2 text-white/80 hover:text-white sm:inline sm:py-0" href={`/projects?category=${c.slug}`}>
-                  {c.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="md:col-span-2">
-          <h2 className="label text-fog">Company</h2>
-          <ul className="mt-4 text-sm sm:mt-5 sm:space-y-2.5">
-            {[
-              ["/bid", "Invite Us to Bid"],
-              ["/prequalification", "Prequalification"],
-              ["/team", "Our Team"],
-              ["/careers", "Careers"],
-              ["/contact", "Contact"],
-            ].map(([href, label]) => (
-              <li key={href}>
-                <Link className="block py-2 text-white/80 hover:text-white sm:inline sm:py-0" href={href}>
-                  {label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <address className="col-span-2 not-italic md:col-span-3">
-          <h2 className="label text-fog">Contact</h2>
-          <div className="mt-5 space-y-3 text-sm text-white/80">
+          <address className="mt-8 space-y-3 text-sm not-italic text-white/80">
             {site.phone && (
               <a href={`tel:${tel}`} className="numeral block text-3xl text-white hover:text-signal-bright">
                 {site.phone}
@@ -105,9 +73,25 @@ export function SiteFooter({ site, categories }: { site: SiteSettings; categorie
                 {cityLine}
               </p>
             )}
-            {site.license_numbers && <p className="label text-white/50">{site.license_numbers}</p>}
-          </div>
-        </address>
+            {site.license_numbers && <p className="label text-white/50">License {site.license_numbers}</p>}
+          </address>
+        </div>
+
+        <FooterList title="Services" links={services.map((s) => [`/services/${s.slug}`, s.name])} className="md:col-span-2" />
+        <FooterList title="Markets" links={markets.map((m) => [`/markets/${m.slug}`, m.name])} className="md:col-span-2" />
+        <FooterList title="Service Areas" links={areas.map((a) => [`/service-areas/${a.slug}`, a.name])} className="md:col-span-2" />
+        <FooterList
+          title="Company"
+          className="md:col-span-2"
+          links={[
+            ["/projects", "Projects"],
+            ["/bid", "Invite Us to Bid"],
+            ["/prequalification", "Prequalification"],
+            ["/team", "Our Team"],
+            ["/careers", "Careers"],
+            ["/contact", "Contact"],
+          ]}
+        />
       </div>
 
       <div className="border-t border-white/10">
@@ -126,5 +110,23 @@ export function SiteFooter({ site, categories }: { site: SiteSettings; categorie
         </div>
       </div>
     </footer>
+  );
+}
+
+function FooterList({ title, links, className = "" }: { title: string; links: string[][]; className?: string }) {
+  if (!links.length) return null;
+  return (
+    <nav aria-label={title} className={className}>
+      <h2 className="label text-fog">{title}</h2>
+      <ul className="mt-4 text-sm sm:mt-5 sm:space-y-2.5">
+        {links.map(([href, label]) => (
+          <li key={href}>
+            <Link className="block py-2 text-white/80 hover:text-white sm:inline sm:py-0" href={href}>
+              {label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
   );
 }
