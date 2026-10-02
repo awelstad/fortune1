@@ -124,13 +124,24 @@ export function ProjectEditor({
             </div>
           </Card>
 
-          <Card title="Scale & metrics" description="Numbers are the headline on every card. Leave blank if unknown.">
+          <Card
+            title="Scale & metrics"
+            description="Numbers are the headline on every card. Leave blank if unknown. Dollar figures stay private unless you tick “Show on website”."
+          >
             <div className="grid gap-4 sm:grid-cols-3">
               <Field label="Project value ($)" htmlFor="project_value" error={errors.project_value} hint="Total construction value">
                 <Input id="project_value" name="project_value" inputMode="numeric" defaultValue={v("project_value")} placeholder="331000000" />
+                <label className="mt-2 flex items-center gap-2 text-xs text-zinc-600">
+                  <input type="checkbox" name="show_project_value" defaultChecked={project?.show_project_value ?? false} className="size-4 rounded border-zinc-300" />
+                  Show on website — only if public (e.g. announced) or the owner/GC approves
+                </label>
               </Field>
               <Field label="Electrical contract ($)" htmlFor="electrical_contract_value" error={errors.electrical_contract_value} hint="Fortune's contract">
                 <Input id="electrical_contract_value" name="electrical_contract_value" inputMode="numeric" defaultValue={v("electrical_contract_value")} />
+                <label className="mt-2 flex items-center gap-2 text-xs text-zinc-600">
+                  <input type="checkbox" name="show_contract_value" defaultChecked={project?.show_contract_value ?? false} className="size-4 rounded border-zinc-300" />
+                  Show on website (usually keep private)
+                </label>
               </Field>
               <Field label="Square feet" htmlFor="square_feet" error={errors.square_feet}>
                 <Input id="square_feet" name="square_feet" inputMode="numeric" defaultValue={v("square_feet")} />

@@ -75,6 +75,8 @@ export async function saveProject(_prev: ActionResult<{ id: string }>, form: For
       scope,
       project_value: int("project_value"),
       electrical_contract_value: int("electrical_contract_value"),
+      show_project_value: form.get("show_project_value") === "on",
+      show_contract_value: form.get("show_contract_value") === "on",
       project_size: str("project_size", 160),
       square_feet: int("square_feet") || null,
       stories: int("stories") || null,
@@ -192,10 +194,13 @@ export async function duplicateProject(id: string): Promise<ActionResult<{ id: s
       slug = `${src.slug}-copy-${n}`;
     }
 
-    const { id: _id, created_at: _c, updated_at: _u, hero_image_id: heroId, ...rest } = src;
+    // Generated columns (public_*) can't be inserted; they recompute from the copy.
+    const { id: _id, created_at: _c, updated_at: _u, hero_image_id: heroId, public_project_value: _pv, public_contract_value: _cv, ...rest } = src;
     void _id;
     void _c;
     void _u;
+    void _pv;
+    void _cv;
     const { data: copy, error: insErr } = await supabase
       .from("projects")
       .insert({ ...rest, slug, name: `${src.name} (Copy)`, published: false, featured: false, archived_at: null })

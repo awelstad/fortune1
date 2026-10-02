@@ -14,15 +14,21 @@ export default async function HomepageAdmin() {
     supabase.from("homepage_settings").select("*").eq("id", 1).maybeSingle(),
     supabase
       .from("projects")
-      .select("id, name, status, published, archived_at, city, display_order, project_value, electrical_contract_value, square_feet, images:project_images!project_images_project_id_fkey(id)")
+      .select("id, name, status, published, archived_at, city, display_order, project_value, electrical_contract_value, show_project_value, show_contract_value, square_feet, images:project_images!project_images_project_id_fkey(id)")
       .order("display_order")
       .order("name"),
   ]);
   const active = (projects ?? []).filter((p) => !p.archived_at);
   const live = active.filter((p) => p.published);
   const allIds = active.map((p) => p.id);
+  // Rank on the figures the public site can see, so this preview matches the homepage.
   const nowJobs = live
     .filter((p) => p.status === "current")
+    .map((p) => ({
+      ...p,
+      project_value: p.show_project_value ? p.project_value : null,
+      electrical_contract_value: p.show_contract_value ? p.electrical_contract_value : null,
+    }))
     .sort(byJobSize)
     .map((p) => ({ id: p.id, name: p.name, value: jobValue(p), sf: p.square_feet, city: p.city }));
   const section = (s: string) => live.filter((p) => p.status === s).map((p) => ({ id: p.id, name: p.name }));

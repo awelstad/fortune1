@@ -1,23 +1,28 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { HomepageSettings, ProjectWithMedia } from "@/lib/types";
-import { locationOf, money, squareFeet } from "@/lib/format";
+import { compactNumber, locationOf, money, squareFeet } from "@/lib/format";
 import { mediaUrl } from "@/lib/media";
 import { ArrowRight, ArrowUpRight } from "@/components/site/Icons";
 import { HeroVideo } from "./HeroVideo";
 import { youtubeId } from "@/lib/youtube";
+
+export type LiveTotals = { value: number; valueJobs: number; valuePartial: boolean; sf: number; sfPartial: boolean };
 
 export function Hero({
   home,
   nowBuilding,
   projectCount,
   currentCount,
+  liveTotals,
   locationLine,
 }: {
   home: HomepageSettings;
   nowBuilding: ProjectWithMedia[];
   projectCount: number;
   currentCount: number;
+  /** Totals across every current job (public figures only). */
+  liveTotals: LiveTotals;
   locationLine: string;
 }) {
   const src = mediaUrl(home.hero_image_path);
@@ -105,9 +110,7 @@ export function Hero({
                   <span className="size-1.5 animate-pulse-live rounded-full bg-live" aria-hidden />
                   Now Building
                 </p>
-                <Link href="/projects?status=current" className="label -my-2 py-3 text-white/60 transition-colors hover:text-white">
-                  All {currentCount} current →
-                </Link>
+                <span className="label text-white/50">{currentCount} live {currentCount === 1 ? "project" : "projects"}</span>
               </div>
               <ul>
                 {nowBuilding.map((p, idx) => {
@@ -135,6 +138,24 @@ export function Hero({
                   );
                 })}
               </ul>
+              {/* Combined scale of every live job — public figures only; "+" when some jobs aren't counted. */}
+              <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4 border-t border-white/15 bg-white/[0.03] px-5 py-4">
+                <div className="flex gap-6">
+                  {liveTotals.valueJobs >= 2 && (
+                    <HeroFigure value={`${money(liveTotals.value)}${liveTotals.valuePartial ? "+" : ""}`} label="Combined value" />
+                  )}
+                  {liveTotals.sf > 0 && (
+                    <HeroFigure value={`${compactNumber(liveTotals.sf)}${liveTotals.sfPartial ? "+" : ""}`} unit="SF" label="Under construction" />
+                  )}
+                </div>
+                <Link
+                  href="/projects?status=current"
+                  className="label group -my-2 inline-flex items-center gap-2 py-3 text-white transition-colors hover:text-signal-bright"
+                >
+                  See all {currentCount} live projects
+                  <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </div>
             </div>
           )}
         </div>

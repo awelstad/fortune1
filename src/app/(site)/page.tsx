@@ -52,6 +52,13 @@ export default async function HomePage() {
   const allCurrent = projects.filter((p) => p.status === "current");
   // Hero "Now Building" board — count and picks are set in Admin → Homepage.
   const nowBuilding = pickNowBuilding(projects, home);
+  const liveTotals = {
+    value: allCurrent.reduce((n, p) => n + (p.project_value ?? 0), 0),
+    valueJobs: allCurrent.filter((p) => p.project_value).length,
+    valuePartial: allCurrent.some((p) => !p.project_value),
+    sf: allCurrent.reduce((n, p) => n + (p.square_feet ?? 0), 0),
+    sfPartial: allCurrent.some((p) => !p.square_feet),
+  };
 
   const tiles: IndustryTile[] = categories
     .filter((c) => c.show_on_home)
@@ -74,7 +81,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero home={home} nowBuilding={nowBuilding} projectCount={projects.length} currentCount={allCurrent.length} locationLine={locationLine} />
+      <Hero home={home} nowBuilding={nowBuilding} projectCount={projects.length} currentCount={allCurrent.length} liveTotals={liveTotals} locationLine={locationLine} />
       <StatsBand stats={stats} />
       <CurrentProjects projects={current} heading={home.current_heading ?? "Current Projects"} intro={home.current_intro} />
       <UpcomingProjects projects={upcoming} heading={home.upcoming_heading ?? "Upcoming Projects"} intro={home.upcoming_intro} />
