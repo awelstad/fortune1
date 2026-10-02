@@ -7,14 +7,13 @@ import { StatusBadge } from "@/components/site/StatusBadge";
 import { ArrowRight } from "@/components/site/Icons";
 
 /** Full-bleed editorial feature: enormous image, dominant numbers. */
-export function FeaturedProject({ project }: { project: ProjectWithMedia }) {
+export function FeaturedProject({ project, index = 0 }: { project: ProjectWithMedia; index?: number }) {
+  const headingId = `featured-heading-${index}`;
   const metrics = projectMetrics(project).slice(0, 4);
-  if (metrics.length < 4 && project.project_size)
-    metrics.push({ key: "size", value: project.project_size, label: "Scale" });
   const category = project.category?.name;
 
   return (
-    <section aria-labelledby="featured-heading" className="relative isolate overflow-hidden bg-ink text-white">
+    <section aria-labelledby={headingId} className="relative isolate overflow-hidden bg-ink text-white">
       <div className="grid lg:min-h-[92vh] lg:grid-cols-12">
         <Link
           href={`/projects/${project.slug}`}
@@ -41,7 +40,7 @@ export function FeaturedProject({ project }: { project: ProjectWithMedia }) {
               <span aria-hidden>/</span>
               {locationOf(project)}
             </p>
-            <h2 id="featured-heading" className="font-display mt-6 text-[clamp(2.75rem,6vw,6.5rem)] text-balance">
+            <h2 id={headingId} className="font-display mt-6 text-[clamp(2.75rem,6vw,6.5rem)] text-balance">
               {project.name}
             </h2>
             <div className="mt-6">
@@ -66,6 +65,7 @@ export function FeaturedProject({ project }: { project: ProjectWithMedia }) {
           )}
 
           <div data-reveal style={{ ["--reveal-delay" as string]: "200ms" }}>
+            {project.project_size && <p className="label mb-5 text-white/60">{project.project_size}</p>}
             {project.summary && <p className="max-w-md leading-relaxed text-fog">{project.summary}</p>}
             <Link
               href={`/projects/${project.slug}`}

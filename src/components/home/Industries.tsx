@@ -1,11 +1,14 @@
 import Link from "next/link";
-import type { Category, ProjectImage } from "@/lib/types";
-import { ProjectMedia } from "@/components/site/ProjectMedia";
+import type { Category } from "@/lib/types";
 import { ArrowUpRight } from "@/components/site/Icons";
 import { SectionHeading } from "./SectionHeading";
 
-export type IndustryTile = Category & { count: number; image: ProjectImage | null; href?: string };
+export type IndustryTile = Category & { count: number; examples: string[]; href?: string };
 
+/**
+ * Typographic market index — answers "have they built projects like mine?"
+ * with names and real project examples instead of a wall of image tiles.
+ */
 export function Industries({
   heading,
   intro,
@@ -20,40 +23,37 @@ export function Industries({
     <section id="industries" aria-labelledby="industries-heading" className="scroll-mt-20 bg-paper py-20 sm:py-28 lg:py-36">
       <div className="shell">
         <SectionHeading id="industries-heading" eyebrow="Markets We Serve" title={heading} intro={intro} />
-      </div>
-      <ul className="scrollbar-none flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:px-8 lg:shell lg:grid lg:grid-cols-3 lg:gap-5 lg:overflow-visible">
-        {tiles.map((t, i) => (
-          <li
-            key={t.id}
-            className="w-[78vw] shrink-0 snap-start sm:w-[46vw] lg:w-auto"
-            data-reveal
-            style={{ ["--reveal-delay" as string]: `${(i % 3) * 90}ms` }}
-          >
-            <Link
-              href={t.href ?? `/projects?category=${t.slug}`}
-              className="group relative block aspect-[4/5] overflow-hidden bg-graphite text-white lg:aspect-[4/3]"
-            >
-              <ProjectMedia image={t.image} alt="" sizes="(min-width: 1024px) 33vw, 78vw" hiResWidth={700} />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/95 via-ink/40 to-ink/20 transition-colors duration-500 group-hover:from-navy-deep/95 group-hover:via-navy/40" />
-              <div className="absolute inset-0 flex flex-col justify-between p-5 sm:p-7">
-                <div className="flex items-start justify-between">
-                  <span className="label text-white/75">
-                    {String(t.count).padStart(2, "0")} {t.count === 1 ? "Project" : "Projects"}
+        <ol className="border-t border-ink">
+          {tiles.map((t, i) => (
+            <li key={t.id} data-reveal style={{ ["--reveal-delay" as string]: `${Math.min(i, 6) * 50}ms` }}>
+              <Link
+                href={t.href ?? `/projects?category=${t.slug}`}
+                className="group grid grid-cols-[2.25rem_minmax(0,1fr)_auto] items-center gap-x-4 border-b border-rule py-5 transition-colors hover:border-ink sm:grid-cols-[3.5rem_minmax(0,1fr)_auto] sm:py-6 lg:grid-cols-[4rem_minmax(0,5fr)_minmax(0,4fr)_auto] lg:gap-x-8"
+              >
+                <span className="label text-mute">{String(i + 1).padStart(2, "0")}</span>
+                <span className="min-w-0">
+                  <span className="font-display block text-[clamp(1.85rem,4vw,3.75rem)] leading-[0.95] text-balance transition-[color,transform] duration-500 ease-[var(--ease-out-expo)] group-hover:translate-x-2 group-hover:text-navy">
+                    {t.name}
                   </span>
-                  <span className="grid size-10 place-items-center border border-white/30 transition-colors duration-300 group-hover:border-white group-hover:bg-white group-hover:text-ink">
+                  <span className="label mt-2 block text-mute lg:hidden">
+                    {t.count} {t.count === 1 ? "project" : "projects"}
+                  </span>
+                </span>
+                <span className="hidden text-sm leading-relaxed text-mute lg:block">{t.examples.join(" · ")}</span>
+                <span className="flex items-center gap-5">
+                  <span className="hidden text-right lg:block">
+                    <span className="numeral block text-4xl">{String(t.count).padStart(2, "0")}</span>
+                    <span className="label text-mute">{t.count === 1 ? "Project" : "Projects"}</span>
+                  </span>
+                  <span className="grid size-10 place-items-center border border-rule transition-colors duration-300 group-hover:border-ink group-hover:bg-ink group-hover:text-white sm:size-12">
                     <ArrowUpRight />
                   </span>
-                </div>
-                <div>
-                  <h3 className="font-display text-4xl text-balance sm:text-5xl">{t.name}</h3>
-                  {t.description && <p className="mt-3 max-w-xs text-sm text-white/70">{t.description}</p>}
-                </div>
-              </div>
-            </Link>
-          </li>
-        ))}
-        <li className="w-1 shrink-0 lg:hidden" aria-hidden />
-      </ul>
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ol>
+      </div>
     </section>
   );
 }

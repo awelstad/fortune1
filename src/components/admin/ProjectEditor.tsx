@@ -192,7 +192,7 @@ export function ProjectEditor({
           <Card title="Visibility">
             <div className="space-y-4">
               <Checkbox name="published" label="Published" hint="Visible on the public website" defaultChecked={project?.published ?? false} />
-              <Checkbox name="featured" label="Featured" hint="Eligible for the homepage feature" defaultChecked={project?.featured ?? false} />
+              <Checkbox name="featured" label="Featured" hint="Shown in the homepage Featured section (needs photos)" defaultChecked={project?.featured ?? false} />
               <Field label="Display order" htmlFor="display_order" hint="Lower numbers appear first. Or drag rows in the project list.">
                 <Input id="display_order" name="display_order" inputMode="numeric" defaultValue={v("display_order") || 1000} />
               </Field>

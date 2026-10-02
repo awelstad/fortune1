@@ -88,10 +88,10 @@ export function HomepageEditor({
 
       <Card
         title="Featured project"
-        description="The large, image-led feature further down the homepage. Only projects with photos can be featured; Automatic picks the best-photographed completed project."
+        description="Every project starred (★) on the Projects list appears here, and visitors can switch between them. Only projects with photos are shown. Optionally pick which one shows first."
       >
-        <Select name="featured_project_id" defaultValue={v("featured_project_id")} aria-label="Featured project">
-          <option value="">Automatic (best-photographed completed project)</option>
+        <Select name="featured_project_id" defaultValue={v("featured_project_id")} aria-label="Featured project shown first">
+          <option value="">Starred projects, in display order</option>
           {projects.map((p) => (
             <option key={p.id} value={p.id} disabled={!p.published || !p.hasPhoto}>
               {p.name} — {p.status}

@@ -4,6 +4,7 @@ import { StatsBand } from "@/components/home/StatsBand";
 import { CurrentProjects } from "@/components/home/CurrentProjects";
 import { UpcomingProjects } from "@/components/home/UpcomingProjects";
 import { FeaturedProject } from "@/components/home/FeaturedProject";
+import { FeaturedSwitcher } from "@/components/home/FeaturedSwitcher";
 import { Capabilities } from "@/components/home/Capabilities";
 import { Industries, type IndustryTile } from "@/components/home/Industries";
 import { ClosingCta } from "@/components/site/ClosingCta";
@@ -34,34 +35,37 @@ export default async function HomePage() {
   ]);
   const marketSlugs = new Set(marketPages.map((m) => m.slug));
 
-  // The featured section is image-led, so it only uses a project with real photography.
+  // Featured: every starred (★) project with photography, in display order; the
+  // optional "lead" chosen on the Homepage admin goes first. Image-led, so no photo = not eligible.
   const photographed = projects.filter((p) => p.hero);
-  const featured =
-    photographed.find((p) => p.id === home.featured_project_id) ??
-    best(photographed.filter((p) => p.status === "completed" && isHiRes(p.hero, 1000)));
-  const current = projects.filter((p) => p.status === "current" && p.id !== featured?.id);
-  const upcoming = projects.filter((p) => p.status === "upcoming" && p.id !== featured?.id);
+  const starred = photographed.filter((p) => p.featured);
+  const lead = photographed.find((p) => p.id === home.featured_project_id);
+  const featuredList = (lead ? [lead, ...starred.filter((p) => p.id !== lead.id)] : starred).slice(0, 5);
+  if (!featuredList.length) {
+    const fallback = best(photographed.filter((p) => p.status === "completed" && isHiRes(p.hero, 1000)));
+    if (fallback) featuredList.push(fallback);
+  }
+  const current = projects.filter((p) => p.status === "current");
+  const upcoming = projects.filter((p) => p.status === "upcoming");
   // Hero "Now Building" board: the strongest current project, then the next two in display order.
   const allCurrent = projects.filter((p) => p.status === "current");
   const top = best(allCurrent);
-  const nowBuilding = top ? [top, ...allCurrent.filter((p) => p.id !== top.id)].slice(0, 3) : [];
+  const nowBuilding = top ? [top, ...allCurrent.filter((p) => p.id !== top.id)].slice(0, 5) : [];
 
   const tiles: IndustryTile[] = categories
     .filter((c) => c.show_on_home)
     .map((c) => {
       const inCat = projects.filter((p) => p.category_id === c.id);
-      const best = [...inCat].filter((p) => p.hero).sort((a, b) => (b.hero!.width ?? 0) - (a.hero!.width ?? 0))[0];
-      const image = c.image_path
-        ? { id: c.id, project_id: "", storage_path: c.image_path, width: 1600, height: 1000, alt: "", caption: null, sort_order: 0 }
-        : (best?.hero ?? null);
-      return { ...c, count: inCat.length, image, href: marketSlugs.has(c.slug) ? `/markets/${c.slug}` : undefined };
+      // Three best-documented projects as proof points for the market.
+      const examples = [...inCat].sort((a, b) => showcaseScore(b) - showcaseScore(a)).slice(0, 3).map((p) => p.name);
+      return { ...c, count: inCat.length, examples, href: marketSlugs.has(c.slug) ? `/markets/${c.slug}` : undefined };
     })
     .filter((t) => t.count > 0);
 
   // Completed work for the editorial grid: best documented first, skipping anything already shown above.
   const completed = projects.filter((p) => p.status === "completed");
   const selected = completed
-    .filter((p) => p.hero && p.id !== featured?.id)
+    .filter((p) => p.hero && !featuredList.some((f) => f.id === p.id))
     .sort((a, b) => showcaseScore(b) - showcaseScore(a))
     .slice(0, 6);
 
@@ -69,11 +73,17 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero home={home} nowBuilding={nowBuilding} projectCount={projects.length} locationLine={locationLine} />
+      <Hero home={home} nowBuilding={nowBuilding} projectCount={projects.length} currentCount={allCurrent.length} locationLine={locationLine} />
       <StatsBand stats={stats} />
       <CurrentProjects projects={current} heading={home.current_heading ?? "Current Projects"} intro={home.current_intro} />
       <UpcomingProjects projects={upcoming} heading={home.upcoming_heading ?? "Upcoming Projects"} intro={home.upcoming_intro} />
-      {featured && <FeaturedProject project={featured} />}
+      {featuredList.length > 0 && (
+        <FeaturedSwitcher names={featuredList.map((p) => p.name)}>
+          {featuredList.map((p, i) => (
+            <FeaturedProject key={p.id} project={p} index={i} />
+          ))}
+        </FeaturedSwitcher>
+      )}
 
       <SelectedWork
         projects={selected}

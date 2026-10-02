@@ -11,11 +11,13 @@ export function Hero({
   home,
   nowBuilding,
   projectCount,
+  currentCount,
   locationLine,
 }: {
   home: HomepageSettings;
   nowBuilding: ProjectWithMedia[];
   projectCount: number;
+  currentCount: number;
   locationLine: string;
 }) {
   const src = mediaUrl(home.hero_image_path);
@@ -102,14 +104,14 @@ export function Hero({
                   Now Building
                 </p>
                 <Link href="/projects?status=current" className="label -my-2 py-3 text-white/60 transition-colors hover:text-white">
-                  All current →
+                  All {currentCount} current →
                 </Link>
               </div>
               <ul>
                 {nowBuilding.map((p, idx) => {
                   const value = p.project_value ?? p.electrical_contract_value;
                   return (
-                    <li key={p.id} className={`border-b border-white/10 last:border-0 ${idx > 0 ? "max-sm:hidden" : ""}`}>
+                    <li key={p.id} className={`border-b border-white/10 last:border-0 ${idx > 0 ? "max-sm:hidden" : ""} ${idx > 2 ? "max-lg:hidden" : ""}`}>
                       <Link
                         href={`/projects/${p.slug}`}
                         className="group grid gap-3 px-5 py-3.5 transition-colors hover:bg-white/5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-4"
