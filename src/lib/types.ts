@@ -95,6 +95,7 @@ export type CompanyStatistic = {
 export type Capability = { title: string; body: string };
 
 export type HomepageSettings = {
+  show_upcoming: boolean;
   hero_eyebrow: string | null;
   hero_headline: string | null;
   hero_subheadline: string | null;

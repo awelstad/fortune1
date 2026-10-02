@@ -71,6 +71,7 @@ export async function saveHomepage(_prev: ActionResult, form: FormData): Promise
       featured_project_id: text(form, "featured_project_id", 64),
       current_heading: text(form, "current_heading", 80),
       current_intro: text(form, "current_intro", 300),
+      show_upcoming: form.get("show_upcoming") === "on",
       upcoming_heading: text(form, "upcoming_heading", 80),
       upcoming_intro: text(form, "upcoming_intro", 300),
       portfolio_heading: text(form, "portfolio_heading", 80),

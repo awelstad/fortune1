@@ -36,17 +36,22 @@ function logError(where: string, error: { message: string } | null) {
   if (error) console.error(`[data] ${where}: ${error.message}`);
 }
 
-/** All published, non-archived projects, in display order. */
+/** All published, non-archived projects, in display order (upcoming ones only when the admin shows them). */
 export const getProjects = cache(async (): Promise<ProjectWithMedia[]> => {
-  const { data, error } = await createPublicClient()
-    .from("projects")
-    .select(PROJECT_SELECT)
-    .eq("published", true)
-    .is("archived_at", null)
-    .order("display_order", { ascending: true })
-    .order("name", { ascending: true });
+  const [{ data, error }, home] = await Promise.all([
+    createPublicClient()
+      .from("projects")
+      .select(PROJECT_SELECT)
+      .eq("published", true)
+      .is("archived_at", null)
+      .order("display_order", { ascending: true })
+      .order("name", { ascending: true }),
+    getHomepage(),
+  ]);
   logError("getProjects", error);
-  return ((data as RawProject[] | null) ?? []).map(withMedia);
+  return ((data as RawProject[] | null) ?? [])
+    .filter((p) => home.show_upcoming || p.status !== "upcoming")
+    .map(withMedia);
 });
 
 export const getProject = cache(async (slug: string): Promise<ProjectWithMedia | null> => {
@@ -65,6 +70,7 @@ export const getCategories = cache(async (): Promise<Category[]> => {
 });
 
 const HOME_DEFAULTS: HomepageSettings = {
+  show_upcoming: false,
   hero_eyebrow: "Commercial Electrical Contractor · Florida",
   hero_headline: "Powering Florida's biggest builds.",
   hero_subheadline: null,

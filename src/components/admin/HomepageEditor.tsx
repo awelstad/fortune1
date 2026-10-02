@@ -7,7 +7,7 @@ import type { Capability, HomepageSettings } from "@/lib/types";
 import { SingleImageField } from "./SingleImageField";
 import { VideoField } from "./VideoField";
 import { YouTubeField } from "./YouTubeField";
-import { Button, Card, Field, Input, Select, Textarea } from "./ui";
+import { Button, Card, Checkbox, Field, Input, Select, Textarea } from "./ui";
 
 export function HomepageEditor({
   home,
@@ -96,6 +96,15 @@ export function HomepageEditor({
             </option>
           ))}
         </Select>
+      </Card>
+
+      <Card title="Upcoming projects">
+        <Checkbox
+          name="show_upcoming"
+          label="Show upcoming projects on the website"
+          hint="When off, projects marked Upcoming are hidden everywhere public (homepage, projects page, filters and their own pages). They stay here in the admin."
+          defaultChecked={home.show_upcoming}
+        />
       </Card>
 
       <Card title="Section headings">
