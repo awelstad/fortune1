@@ -24,6 +24,8 @@ export function Hero({
   // An uploaded video file takes priority over a YouTube link.
   const video = mediaUrl(home.hero_video_path);
   const yt = video ? null : youtubeId(home.hero_youtube_url);
+  // Longer lists get tighter rows so every active job fits beside the headline.
+  const compact = nowBuilding.length > 5;
 
   return (
     <section className="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-ink text-white">
@@ -114,10 +116,10 @@ export function Hero({
                     <li key={p.id} className={`border-b border-white/10 last:border-0 ${idx > 0 ? "max-sm:hidden" : ""} ${idx > 2 ? "max-lg:hidden" : ""}`}>
                       <Link
                         href={`/projects/${p.slug}`}
-                        className="group grid gap-3 px-5 py-3.5 transition-colors hover:bg-white/5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-4"
+                        className={`group grid gap-3 px-5 transition-colors ${compact ? "py-2.5" : "py-3.5"} hover:bg-white/5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-4`}
                       >
                         <span className="min-w-0">
-                          <span className="font-display line-clamp-2 block text-lg text-balance transition-colors group-hover:text-signal-bright sm:text-xl">
+                          <span className={`font-display line-clamp-2 block text-lg text-balance transition-colors group-hover:text-signal-bright ${compact ? "sm:text-lg" : "sm:text-xl"}`}>
                             {p.name}
                           </span>
                           <span className="label mt-1.5 block text-white/50">{locationOf(p)}</span>

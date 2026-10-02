@@ -2,7 +2,7 @@ import type { ProjectWithMedia } from "@/lib/types";
 import { ProjectCard } from "@/components/site/ProjectCard";
 import { SectionHeading } from "./SectionHeading";
 
-const LIMIT = 6;
+const LIMIT = 9;
 
 /**
  * "Now Building" board: every active job gets an equal card so the section

@@ -50,7 +50,7 @@ export default async function HomePage() {
   // Hero "Now Building" board: the strongest current project, then the next two in display order.
   const allCurrent = projects.filter((p) => p.status === "current");
   const top = best(allCurrent);
-  const nowBuilding = top ? [top, ...allCurrent.filter((p) => p.id !== top.id)].slice(0, 5) : [];
+  const nowBuilding = top ? [top, ...allCurrent.filter((p) => p.id !== top.id)].slice(0, 8) : [];
 
   const tiles: IndustryTile[] = categories
     .filter((c) => c.show_on_home)
