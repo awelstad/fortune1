@@ -34,6 +34,13 @@ export function ClosingCta({
               {buttonLabel || "Start a Conversation"}
               <ArrowUpRight className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </Link>
+            <Link
+              href="/prequalification"
+              className="label group inline-flex items-center justify-between gap-6 border border-white/30 px-6 py-5 text-white transition-colors hover:border-white hover:bg-white/5"
+            >
+              Request Prequalification
+              <ArrowUpRight className="size-4" />
+            </Link>
             {phone && (
               <a href={`tel:${tel}`} className="group flex items-baseline justify-between border-b border-white/25 pb-3 hover:border-white">
                 <span className="label text-white/60">Call</span>

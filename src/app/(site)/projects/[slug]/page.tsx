@@ -103,7 +103,7 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
   const more = related(all, project);
   const bigHero = isHiRes(project.hero, 1000);
   const where = locationOf(project);
-  const tileCount = metrics.length + timeline.length + (project.project_size ? 1 : 0);
+  const tileCount = metrics.length + timeline.length;
 
   return (
     <>
@@ -158,7 +158,7 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
                 <div
                   key={m.key}
                   className={`border-b border-r border-rule p-5 sm:p-8 ${
-                    !project.project_size && i === arr.length - 1 && tileCount % 2 === 1 ? "col-span-2 md:col-span-1" : ""
+                    i === arr.length - 1 && tileCount % 2 === 1 ? "col-span-2 md:col-span-1" : ""
                   }`}
                   data-reveal
                   style={{ ["--reveal-delay" as string]: `${i * 60}ms` }}
@@ -169,15 +169,14 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
                   </dd>
                 </div>
               ))}
-              {project.project_size && (
-                <div className={`border-b border-r border-rule p-5 sm:p-8 ${tileCount % 2 === 1 ? "col-span-2 md:col-span-1" : ""}`} data-reveal>
-                  <dt className="sr-only">Scale</dt>
-                  <dd>
-                    <MetricBlock metric={{ key: "size", value: project.project_size, label: "Scale" }} />
-                  </dd>
-                </div>
-              )}
             </dl>
+            {/* Free-text scale reads as a sentence, so it sits under the figures rather than posing as one. */}
+            {project.project_size && (
+              <p className="flex flex-wrap items-baseline gap-x-4 gap-y-1 py-5 sm:py-6" data-reveal>
+                <span className="label text-mute">Scale</span>
+                <span className="font-display-wide text-base sm:text-lg">{project.project_size}</span>
+              </p>
+            )}
           </div>
         </section>
       )}
@@ -187,8 +186,8 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
         <section className="border-b border-rule bg-paper">
           <div className="shell flex flex-col gap-6 py-12 sm:flex-row sm:items-center sm:justify-between sm:py-16">
             <p className="max-w-xl text-lg leading-relaxed text-mute">
-              Full project details and photography are being prepared. Want to know more about our work on{" "}
-              <span className="text-ink">{project.name}</span>?
+              Want the details on our work at <span className="text-ink">{project.name}</span>? Our team can walk you through
+              the scope.
             </p>
             <Link
               href="/contact"

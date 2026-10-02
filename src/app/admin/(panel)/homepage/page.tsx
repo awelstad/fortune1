@@ -12,7 +12,7 @@ export default async function HomepageAdmin() {
     supabase.from("homepage_settings").select("*").eq("id", 1).maybeSingle(),
     supabase
       .from("projects")
-      .select("id, name, status, published, archived_at")
+      .select("id, name, status, published, archived_at, images:project_images!project_images_project_id_fkey(id)")
       .order("display_order")
       .order("name"),
   ]);
@@ -25,7 +25,10 @@ export default async function HomepageAdmin() {
     <>
       <PageHeader title="Homepage" description="Everything on the homepage except the projects themselves." />
       {home ? (
-        <HomepageEditor home={home as HomepageSettings} projects={active} />
+        <HomepageEditor
+          home={home as HomepageSettings}
+          projects={active.map((p) => ({ ...p, hasPhoto: (p.images?.length ?? 0) > 0 }))}
+        />
       ) : (
         <p className="text-sm text-red-600">Homepage settings row is missing. Run the import script.</p>
       )}

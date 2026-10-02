@@ -40,6 +40,10 @@ export function ProjectCard({
   const Heading = headingLevel;
   const expected = project.status === "upcoming" ? formatMonthYear(project.start_date) : null;
   const isFeature = variant === "feature";
+  // No photography: the name is set large inside the panel so the card reads as a
+  // deliberate typographic tile, not a missing image.
+  const typeset = !project.hero;
+  const nameInside = isFeature || typeset;
 
   return (
     <article className={`group relative ${fill ? "lg:h-full" : ""}`}>
@@ -59,7 +63,7 @@ export function ProjectCard({
             sizes={sizes}
             priority={priority}
             hiResWidth={isFeature ? 1000 : 600}
-            placeholderText={category}
+            placeholderText={null}
           />
           <div
             className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/25 to-ink/10 transition-opacity duration-700 group-hover:opacity-90"
@@ -76,8 +80,12 @@ export function ProjectCard({
           </div>
 
           <div className="absolute inset-x-0 bottom-0 p-4 sm:p-6">
-            {isFeature && (
-              <Heading className="font-display mb-5 max-w-[16ch] text-4xl text-white sm:text-6xl lg:text-7xl">
+            {nameInside && (
+              <Heading
+                className={`font-display max-w-[16ch] text-white text-balance ${
+                  isFeature ? "mb-5 text-4xl sm:text-6xl lg:text-7xl" : "mb-4 text-[2rem] leading-[0.95] sm:text-[2.5rem]"
+                }`}
+              >
                 {project.name}
               </Heading>
             )}
@@ -106,7 +114,7 @@ export function ProjectCard({
           </div>
         </div>
 
-        {!isFeature ? (
+        {!nameInside ? (
           <div className="flex items-start justify-between gap-4 border-b border-rule pb-4 pt-4">
             <div className="min-w-0">
               <Heading className="font-display text-2xl text-balance sm:text-[1.75rem]">{project.name}</Heading>
@@ -123,7 +131,7 @@ export function ProjectCard({
           <div className="flex items-center justify-between gap-4 border-b border-rule py-4">
             <p className="label text-mute">{locationOf(project)}</p>
             <span className="label inline-flex items-center gap-2 text-ink">
-              View Project <ArrowUpRight />
+              {expected ? `Expected ${expected}` : "View Project"} <ArrowUpRight />
             </span>
           </div>
         )}

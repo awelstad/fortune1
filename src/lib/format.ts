@@ -81,9 +81,19 @@ export function projectTimeline(p: Project): Metric[] {
   return m;
 }
 
-/** Up to `n` headline metrics for cards. Falls back to free-form project size. */
+/**
+ * Below these, a figure undersells on a card (a "$30,000" headline reads as a
+ * small shop). The project page still lists every fact.
+ */
+const CARD_FLOOR: Partial<Record<string, (p: Project) => boolean>> = {
+  sf: (p) => (p.square_feet ?? 0) >= 10_000,
+  stories: (p) => (p.stories ?? 0) >= 3,
+  contract: (p) => (p.electrical_contract_value ?? 0) >= 250_000,
+};
+
+/** Up to `n` headline metrics for cards — only ones that communicate scale. Falls back to free-form project size. */
 export function cardMetrics(p: Project, n = 2): Metric[] {
-  const m = projectMetrics(p);
+  const m = projectMetrics(p).filter((x) => CARD_FLOOR[x.key]?.(p) ?? true);
   if (m.length < n && p.project_size) m.push({ key: "size", value: p.project_size, label: "Scale" });
   return m.slice(0, n);
 }

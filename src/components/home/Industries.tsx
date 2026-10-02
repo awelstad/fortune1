@@ -31,7 +31,7 @@ export function Industries({
           >
             <Link
               href={t.href ?? `/projects?category=${t.slug}`}
-              className="group relative block aspect-[4/5] overflow-hidden bg-graphite text-white lg:aspect-[5/4]"
+              className="group relative block aspect-[4/5] overflow-hidden bg-graphite text-white lg:aspect-[4/3]"
             >
               <ProjectMedia image={t.image} alt="" sizes="(min-width: 1024px) 33vw, 78vw" hiResWidth={700} />
               <div className="absolute inset-0 bg-gradient-to-t from-ink/95 via-ink/40 to-ink/20 transition-colors duration-500 group-hover:from-navy-deep/95 group-hover:via-navy/40" />

@@ -48,7 +48,7 @@ export function ProjectMedia({
   );
 }
 
-/** Intentional stand-in for projects awaiting photography. */
+/** Architectural panel for projects without photography — never claims photos are coming. */
 export function PendingMedia({
   text,
   className = "",
@@ -80,7 +80,6 @@ export function PendingMedia({
           {text}
         </p>
       )}
-      {!hero && <p className="label absolute left-[12%] top-[62%] mt-4 pl-4 text-white/45">Photography coming soon</p>}
     </div>
   );
 }

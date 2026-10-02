@@ -5,6 +5,7 @@ import { ProjectBrowser } from "@/components/site/ProjectBrowser";
 import { ProjectCard } from "@/components/site/ProjectCard";
 import { ClosingCta } from "@/components/site/ClosingCta";
 import { getCategories, getHomepage, getProjects, getSite } from "@/lib/data";
+import { photoFirst } from "@/lib/rank";
 import { compactNumber, fullNumber } from "@/lib/format";
 import { pageMeta } from "@/lib/seo";
 
@@ -15,15 +16,18 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ProjectsPage() {
-  const [projects, categories, site, home] = await Promise.all([
+  const [all, categories, site, home] = await Promise.all([
     getProjects(),
     getCategories(),
     getSite(),
     getHomepage(),
   ]);
 
+  // Photographed work leads; projects without photos follow as typographic cards.
+  const projects = photoFirst(all);
   const count = (s: string) => projects.filter((p) => p.status === s).length;
   const sf = projects.reduce((n, p) => n + (p.square_feet ?? 0), 0);
+  const units = projects.reduce((n, p) => n + (p.units ?? 0), 0);
   const cities = new Set(projects.map((p) => p.city).filter(Boolean)).size;
 
   const facts = [
@@ -31,7 +35,8 @@ export default async function ProjectsPage() {
     { label: "Current", value: fullNumber(count("current")), live: true },
     { label: "Upcoming", value: fullNumber(count("upcoming")) },
     { label: "Square Feet", value: sf ? compactNumber(sf) : null },
-    { label: "Florida Markets", value: cities ? fullNumber(cities) : null },
+    { label: "Residential Units", value: units ? fullNumber(units) : null },
+    { label: "Florida Cities", value: cities ? fullNumber(cities) : null },
   ].filter((f) => f.value && f.value !== "0");
 
   return (
@@ -63,14 +68,14 @@ export default async function ProjectsPage() {
         </div>
         {facts.length > 0 && (
           <div className="shell mt-14">
-            <dl className="grid grid-cols-2 border-l border-t border-white/10 sm:grid-cols-3 lg:grid-cols-5">
+            <dl className={`grid grid-cols-2 border-l border-t border-white/10 sm:grid-cols-3 ${facts.length >= 6 ? "lg:grid-cols-6" : "lg:grid-cols-5"}`}>
               {facts.map((f) => (
                 <div key={f.label} className="border-b border-r border-white/10 p-5 sm:p-6">
                   <dt className="label flex items-center gap-2 text-fog">
                     {f.live && <span className="size-1.5 animate-pulse-live rounded-full bg-live" aria-hidden />}
                     {f.label}
                   </dt>
-                  <dd className="numeral mt-3 text-5xl sm:text-6xl">{f.value}</dd>
+                  <dd className="numeral mt-3 text-5xl sm:text-6xl xl:text-7xl">{f.value}</dd>
                 </div>
               ))}
             </dl>

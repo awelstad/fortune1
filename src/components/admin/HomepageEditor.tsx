@@ -14,7 +14,7 @@ export function HomepageEditor({
   projects,
 }: {
   home: HomepageSettings;
-  projects: { id: string; name: string; status: string; published: boolean }[];
+  projects: { id: string; name: string; status: string; published: boolean; hasPhoto: boolean }[];
 }) {
   const [state, action, pending] = useActionState<ActionResult, FormData>(saveHomepage, { ok: true });
   const [caps, setCaps] = useState<Capability[]>(home.capabilities ?? []);
@@ -86,13 +86,16 @@ export function HomepageEditor({
         </div>
       </div>
 
-      <Card title="Featured project" description="The large editorial feature further down the homepage.">
+      <Card
+        title="Featured project"
+        description="The large, image-led feature further down the homepage. Only projects with photos can be featured; Automatic picks the best-photographed completed project."
+      >
         <Select name="featured_project_id" defaultValue={v("featured_project_id")} aria-label="Featured project">
-          <option value="">Automatic (first project marked Featured)</option>
+          <option value="">Automatic (best-photographed completed project)</option>
           {projects.map((p) => (
-            <option key={p.id} value={p.id} disabled={!p.published}>
+            <option key={p.id} value={p.id} disabled={!p.published || !p.hasPhoto}>
               {p.name} — {p.status}
-              {p.published ? "" : " (draft)"}
+              {!p.published ? " (draft)" : !p.hasPhoto ? " (needs photos)" : ""}
             </option>
           ))}
         </Select>

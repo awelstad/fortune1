@@ -120,13 +120,12 @@ export function Hero({
                           </span>
                           <span className="label mt-1.5 block text-white/50">{locationOf(p)}</span>
                         </span>
-                        <span className="grid grid-cols-[6rem_8rem] gap-3 sm:grid-cols-[5.5rem_7.5rem] sm:text-right">
-                          <HeroFigure
-                            value={value ? money(value) : null}
-                            label={p.project_value ? "Value" : p.electrical_contract_value ? "Contract" : "Value"}
-                          />
-                          <HeroFigure value={p.square_feet ? squareFeet(p.square_feet) : null} unit="SF" label="Sq Ft" />
-                        </span>
+                        {(value || p.square_feet) && (
+                          <span className="flex gap-6 sm:justify-end sm:text-right">
+                            {value && <HeroFigure value={money(value)} label={p.project_value ? "Value" : "Contract"} />}
+                            {p.square_feet && <HeroFigure value={squareFeet(p.square_feet)} unit="SF" label="Sq Ft" />}
+                          </span>
+                        )}
                       </Link>
                     </li>
                   );
@@ -150,13 +149,13 @@ export function Hero({
   );
 }
 
-/** A compact figure for the Now Building board; "—" until a real value is entered. */
-function HeroFigure({ value, unit, label }: { value: string | null; unit?: string; label: string }) {
+/** A compact figure for the Now Building board (only rendered when the value exists). */
+function HeroFigure({ value, unit, label }: { value: string; unit?: string; label: string }) {
   return (
     <span className="min-w-0">
-      <span className={`numeral block text-2xl sm:text-3xl ${value ? "text-white" : "text-white/30"}`}>
-        {value ?? "—"}
-        {value && unit && <span className="ml-0.5 text-[0.45em] tracking-normal">{unit}</span>}
+      <span className="numeral block text-2xl text-white sm:text-3xl">
+        {value}
+        {unit && <span className="ml-0.5 text-[0.45em] tracking-normal">{unit}</span>}
       </span>
       <span className="label mt-1 block text-white/50">{label}</span>
     </span>
