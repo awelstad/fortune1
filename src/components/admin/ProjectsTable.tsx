@@ -36,6 +36,12 @@ export type AdminProjectRow = {
 export function ProjectsTable({ projects, categories }: { projects: AdminProjectRow[]; categories: Category[] }) {
   const router = useRouter();
   const [pending, start] = useTransition();
+  const [savedAt, setSavedAt] = useState<number | null>(null);
+  useEffect(() => {
+    if (!savedAt) return;
+    const t = setTimeout(() => setSavedAt(null), 3000);
+    return () => clearTimeout(t);
+  }, [savedAt]);
   const [rows, setRows] = useState(projects);
   const [q, setQ] = useState("");
   const [status, setStatus] = useState<"all" | ProjectStatus>("all");
@@ -77,6 +83,7 @@ export function ProjectsTable({ projects, categories }: { projects: AdminProject
     start(async () => {
       const res = await fn();
       if (!res.ok || res.message) setFlash({ tone: res.ok ? "success" : "error", text: res.message ?? "Done." });
+      if (res.ok) setSavedAt(Date.now());
       router.refresh();
     });
   };
@@ -137,8 +144,11 @@ export function ProjectsTable({ projects, categories }: { projects: AdminProject
           <option value="draft">Drafts</option>
           <option value="archived">Archived</option>
         </Select>
-        <p className="text-sm text-zinc-500 lg:ml-auto" aria-live="polite">
-          {pending ? "Saving…" : `${filtered.length} of ${rows.filter((r) => !r.archived_at).length}`}
+        <p className="text-sm text-zinc-500 lg:ml-auto">
+          <span aria-live="polite" className={`mr-3 font-medium ${pending ? "text-zinc-500" : "text-emerald-700"}`}>
+            {pending ? "Saving…" : savedAt ? "✓ Saved" : ""}
+          </span>
+          {`${filtered.length} of ${rows.filter((r) => !r.archived_at).length}`}
         </p>
       </div>
 

@@ -23,7 +23,7 @@ export default async function AdminProjectsPage() {
     <>
       <PageHeader
         title="Projects"
-        description="Drag rows to set display order. Status controls which homepage section a project appears in."
+        description="Changes on this list save automatically. Drag rows to set display order; status controls which homepage section a project appears in; ★ puts a project in the homepage Featured section."
         actions={
           <Link href="/admin/projects/new" className={buttonCls("primary")}>
             + New project
