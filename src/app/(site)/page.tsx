@@ -16,6 +16,7 @@ import { safetyFacts } from "@/lib/format";
 import { best, showcaseScore } from "@/lib/rank";
 import { isHiRes } from "@/lib/media";
 import { pageMeta } from "@/lib/seo";
+import { pickNowBuilding } from "@/lib/now-building";
 
 export const revalidate = 300;
 
@@ -49,8 +50,8 @@ export default async function HomePage() {
   const upcoming = projects.filter((p) => p.status === "upcoming");
   // Hero "Now Building" board: the strongest current project, then the next two in display order.
   const allCurrent = projects.filter((p) => p.status === "current");
-  const top = best(allCurrent);
-  const nowBuilding = top ? [top, ...allCurrent.filter((p) => p.id !== top.id)].slice(0, 8) : [];
+  // Hero "Now Building" board — count and picks are set in Admin → Homepage.
+  const nowBuilding = pickNowBuilding(projects, home);
 
   const tiles: IndustryTile[] = categories
     .filter((c) => c.show_on_home)

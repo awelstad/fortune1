@@ -95,6 +95,9 @@ export type CompanyStatistic = {
 export type Capability = { title: string; body: string };
 
 export type HomepageSettings = {
+  now_building_count: number;
+  now_building_mode: "auto" | "manual";
+  now_building_ids: string[];
   show_upcoming: boolean;
   hero_eyebrow: string | null;
   hero_headline: string | null;

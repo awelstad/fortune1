@@ -518,3 +518,26 @@ export async function saveTestimonials(items: TestimonialInput[]): Promise<Actio
     return { ok: true, message: "Testimonials saved." };
   });
 }
+
+// ---------------------------------------------------------------------------
+// Hero "Now Building" board
+// ---------------------------------------------------------------------------
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export async function saveNowBuilding(input: { count: number; mode: "auto" | "manual"; ids: string[] }): Promise<ActionResult> {
+  return run(async (): Promise<ActionResult> => {
+    const { supabase } = await requireAdmin();
+    const count = Math.round(Number(input.count));
+    if (!(count >= 1 && count <= 8)) return { ok: false, message: "Choose between 1 and 8 jobs." };
+    const mode = input.mode === "manual" ? "manual" : "auto";
+    const ids = [...new Set((input.ids ?? []).filter((id) => UUID.test(id)))].slice(0, 8);
+    if (mode === "manual" && ids.length === 0) return { ok: false, message: "Pick at least one job, or switch to Automatic." };
+    const { error } = await supabase
+      .from("homepage_settings")
+      .update({ now_building_count: count, now_building_mode: mode, now_building_ids: ids })
+      .eq("id", 1);
+    if (error) throw error;
+    refresh();
+    return { ok: true, message: "Now Building saved." };
+  });
+}

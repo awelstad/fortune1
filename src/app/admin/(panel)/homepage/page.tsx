@@ -2,6 +2,8 @@ import { requireAdminPage } from "@/lib/admin/auth";
 import { Card, PageHeader } from "@/components/admin/ui";
 import { HomepageEditor } from "@/components/admin/HomepageEditor";
 import { SectionOrder } from "@/components/admin/SectionOrder";
+import { NowBuildingEditor } from "@/components/admin/NowBuildingEditor";
+import { byJobSize, jobValue } from "@/lib/now-building";
 import type { HomepageSettings } from "@/lib/types";
 
 export const metadata = { title: "Homepage" };
@@ -12,18 +14,30 @@ export default async function HomepageAdmin() {
     supabase.from("homepage_settings").select("*").eq("id", 1).maybeSingle(),
     supabase
       .from("projects")
-      .select("id, name, status, published, archived_at, images:project_images!project_images_project_id_fkey(id)")
+      .select("id, name, status, published, archived_at, city, display_order, project_value, electrical_contract_value, square_feet, images:project_images!project_images_project_id_fkey(id)")
       .order("display_order")
       .order("name"),
   ]);
   const active = (projects ?? []).filter((p) => !p.archived_at);
   const live = active.filter((p) => p.published);
   const allIds = active.map((p) => p.id);
+  const nowJobs = live
+    .filter((p) => p.status === "current")
+    .sort(byJobSize)
+    .map((p) => ({ id: p.id, name: p.name, value: jobValue(p), sf: p.square_feet, city: p.city }));
   const section = (s: string) => live.filter((p) => p.status === s).map((p) => ({ id: p.id, name: p.name }));
 
   return (
     <>
       <PageHeader title="Homepage" description="Everything on the homepage except the projects themselves." />
+      {home && (
+        <div className="mb-6">
+          <NowBuildingEditor
+            jobs={nowJobs}
+            initial={{ count: home.now_building_count ?? 5, mode: home.now_building_mode ?? "auto", ids: home.now_building_ids ?? [] }}
+          />
+        </div>
+      )}
       {home ? (
         <HomepageEditor
           home={home as HomepageSettings}

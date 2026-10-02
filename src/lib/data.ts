@@ -70,6 +70,9 @@ export const getCategories = cache(async (): Promise<Category[]> => {
 });
 
 const HOME_DEFAULTS: HomepageSettings = {
+  now_building_count: 5,
+  now_building_mode: "auto",
+  now_building_ids: [],
   show_upcoming: false,
   hero_eyebrow: "Commercial Electrical Contractor · Florida",
   hero_headline: "Powering Florida's biggest builds.",
