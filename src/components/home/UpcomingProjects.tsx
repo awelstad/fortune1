@@ -32,7 +32,7 @@ export function UpcomingProjects({
 
       {withPhotos.length > 0 && (
         <>
-          <div className="scrollbar-none -mb-4 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 pl-4 sm:pl-8 lg:hidden">
+          <div className="scrollbar-none -mb-4 flex snap-x snap-mandatory scroll-pl-4 gap-5 overflow-x-auto pb-4 pl-4 sm:scroll-pl-8 sm:pl-8 lg:hidden">
             {withPhotos.map((p) => (
               <div key={p.id} className="w-[82vw] shrink-0 snap-start sm:w-[44vw]">
                 <ProjectCard project={p} variant="tall" sizes="82vw" />
