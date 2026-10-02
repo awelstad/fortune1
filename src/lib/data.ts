@@ -18,18 +18,38 @@ import type {
   Testimonial,
 } from "./types";
 
-const PROJECT_SELECT =
-  "*, category:project_categories(id, slug, name, short_name), images:project_images!project_images_project_id_fkey(*)";
+// Explicit columns: the public role can't read project_value / electrical_contract_value
+// (see migration 0010). It reads public_* instead, which are null unless the
+// project opts in to showing that figure.
+const PUBLIC_PROJECT_COLUMNS = [
+  "id", "slug", "name", "status", "category_id", "city", "state", "location_label",
+  "summary", "description", "scope", "project_size", "square_feet", "stories", "units",
+  "start_date", "completion_date", "timeline_note", "general_contractor", "owner", "architect",
+  "featured", "published", "archived_at", "display_order", "hero_image_id", "seo_title", "seo_description",
+  "created_at", "updated_at", "public_project_value", "public_contract_value",
+].join(", ");
+const PROJECT_SELECT = `${PUBLIC_PROJECT_COLUMNS}, category:project_categories(id, slug, name, short_name), images:project_images!project_images_project_id_fkey(*)`;
 
-type RawProject = Project & {
+type RawProject = Omit<Project, "project_value" | "electrical_contract_value" | "show_project_value" | "show_contract_value"> & {
+  public_project_value: number | null;
+  public_contract_value: number | null;
   category: ProjectWithMedia["category"];
   images: ProjectImage[] | null;
 };
 
-function withMedia(p: RawProject): ProjectWithMedia {
+function withMedia({ public_project_value, public_contract_value, ...p }: RawProject): ProjectWithMedia {
   const images = [...(p.images ?? [])].sort((a, b) => a.sort_order - b.sort_order);
   const hero = images.find((i) => i.id === p.hero_image_id) ?? images[0] ?? null;
-  return { ...p, images, hero };
+  // Downstream code only ever sees figures that are cleared for publication.
+  return {
+    ...p,
+    project_value: public_project_value,
+    electrical_contract_value: public_contract_value,
+    show_project_value: public_project_value != null,
+    show_contract_value: public_contract_value != null,
+    images,
+    hero,
+  };
 }
 
 function logError(where: string, error: { message: string } | null) {

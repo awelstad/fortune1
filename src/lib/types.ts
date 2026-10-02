@@ -43,6 +43,9 @@ export type Project = {
   scope: string[];
   project_value: number | null;
   electrical_contract_value: number | null;
+  /** Admin opt-ins: dollar figures are private unless ticked. */
+  show_project_value: boolean;
+  show_contract_value: boolean;
   project_size: string | null;
   square_feet: number | null;
   stories: number | null;
