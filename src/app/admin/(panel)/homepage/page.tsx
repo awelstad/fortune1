@@ -40,7 +40,10 @@ export default async function HomepageAdmin() {
         <div className="mb-6">
           <NowBuildingEditor
             jobs={nowJobs}
-            initial={{ count: home.now_building_count ?? 5, mode: home.now_building_mode ?? "auto", ids: home.now_building_ids ?? [] }}
+            initial={{ count: home.now_building_count ?? 5, mode: home.now_building_mode ?? "auto", ids: home.now_building_ids ?? [],
+              valueTotal: home.now_building_value_total ?? false,
+              sfTotal: home.now_building_sf_total ?? true,
+            }}
           />
         </div>
       )}

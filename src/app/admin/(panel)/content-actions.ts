@@ -524,7 +524,13 @@ export async function saveTestimonials(items: TestimonialInput[]): Promise<Actio
 // ---------------------------------------------------------------------------
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-export async function saveNowBuilding(input: { count: number; mode: "auto" | "manual"; ids: string[] }): Promise<ActionResult> {
+export async function saveNowBuilding(input: {
+  count: number;
+  mode: "auto" | "manual";
+  ids: string[];
+  valueTotal: boolean;
+  sfTotal: boolean;
+}): Promise<ActionResult> {
   return run(async (): Promise<ActionResult> => {
     const { supabase } = await requireAdmin();
     const count = Math.round(Number(input.count));
@@ -534,7 +540,13 @@ export async function saveNowBuilding(input: { count: number; mode: "auto" | "ma
     if (mode === "manual" && ids.length === 0) return { ok: false, message: "Pick at least one job, or switch to Automatic." };
     const { error } = await supabase
       .from("homepage_settings")
-      .update({ now_building_count: count, now_building_mode: mode, now_building_ids: ids })
+      .update({
+        now_building_count: count,
+        now_building_mode: mode,
+        now_building_ids: ids,
+        now_building_value_total: !!input.valueTotal,
+        now_building_sf_total: !!input.sfTotal,
+      })
       .eq("id", 1);
     if (error) throw error;
     refresh();

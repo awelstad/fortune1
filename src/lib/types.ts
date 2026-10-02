@@ -101,6 +101,8 @@ export type HomepageSettings = {
   now_building_count: number;
   now_building_mode: "auto" | "manual";
   now_building_ids: string[];
+  now_building_value_total: boolean;
+  now_building_sf_total: boolean;
   show_upcoming: boolean;
   hero_eyebrow: string | null;
   hero_headline: string | null;

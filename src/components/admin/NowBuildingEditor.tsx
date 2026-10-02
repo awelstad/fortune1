@@ -18,11 +18,13 @@ export function NowBuildingEditor({
   initial,
 }: {
   jobs: NowBuildingJob[]; // current + published, biggest first
-  initial: { count: number; mode: "auto" | "manual"; ids: string[] };
+  initial: { count: number; mode: "auto" | "manual"; ids: string[]; valueTotal: boolean; sfTotal: boolean };
 }) {
   const router = useRouter();
   const [count, setCount] = useState(initial.count);
   const [mode, setMode] = useState(initial.mode);
+  const [valueTotal, setValueTotal] = useState(initial.valueTotal);
+  const [sfTotal, setSfTotal] = useState(initial.sfTotal);
   const known = new Set(jobs.map((j) => j.id));
   const [picked, setPicked] = useState<string[]>(
     initial.ids.filter((id) => known.has(id)).length ? initial.ids.filter((id) => known.has(id)) : jobs.slice(0, initial.count).map((j) => j.id),
@@ -132,6 +134,24 @@ export function NowBuildingEditor({
               </li>
             ))}
           </ol>
+          <fieldset className="mt-5 space-y-2">
+            <legend className="mb-1.5 text-xs font-medium text-zinc-700">Totals line (all live jobs)</legend>
+            <label className="flex items-start gap-2 text-sm text-zinc-800">
+              <input type="checkbox" checked={sfTotal} onChange={(e) => setSfTotal(e.target.checked)} className="mt-0.5 size-4 rounded border-zinc-300" />
+              <span>
+                Total square feet under construction
+              </span>
+            </label>
+            <label className="flex items-start gap-2 text-sm text-zinc-800">
+              <input type="checkbox" checked={valueTotal} onChange={(e) => setValueTotal(e.target.checked)} className="mt-0.5 size-4 rounded border-zinc-300" />
+              <span>
+                Combined project value
+                <span className="block text-xs text-zinc-500">
+                  Adds only values marked &ldquo;Show on website&rdquo; on each project; needs at least two.
+                </span>
+              </span>
+            </label>
+          </fieldset>
           {mode === "manual" && picked.length > count && (
             <p className="mt-2 text-xs text-amber-700">
               {picked.length} ticked but only {count} show — raise &ldquo;Jobs to show&rdquo; or untick some.
@@ -145,7 +165,7 @@ export function NowBuildingEditor({
           disabled={pending}
           onClick={() =>
             start(async () => {
-              const res = await saveNowBuilding({ count, mode, ids: picked });
+              const res = await saveNowBuilding({ count, mode, ids: picked, valueTotal, sfTotal });
               setMsg({ tone: res.ok ? "success" : "error", text: res.message ?? "Saved." });
               if (res.ok) router.refresh();
             })

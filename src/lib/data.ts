@@ -93,6 +93,8 @@ const HOME_DEFAULTS: HomepageSettings = {
   now_building_count: 5,
   now_building_mode: "auto",
   now_building_ids: [],
+  now_building_value_total: false,
+  now_building_sf_total: true,
   show_upcoming: false,
   hero_eyebrow: "Commercial Electrical Contractor · Florida",
   hero_headline: "Powering Florida's biggest builds.",

@@ -140,7 +140,7 @@ export function Hero({
               </ul>
               {/* Combined scale of every live job — public figures only; "+" when some jobs aren't counted. */}
               <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4 border-t border-white/15 bg-white/[0.03] px-5 py-4">
-                <div className="flex gap-6">
+                <div className="flex gap-6 empty:hidden">
                   {liveTotals.valueJobs >= 2 && (
                     <HeroFigure value={`${money(liveTotals.value)}${liveTotals.valuePartial ? "+" : ""}`} label="Combined value" />
                   )}

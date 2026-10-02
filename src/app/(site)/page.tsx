@@ -52,11 +52,12 @@ export default async function HomePage() {
   const allCurrent = projects.filter((p) => p.status === "current");
   // Hero "Now Building" board — count and picks are set in Admin → Homepage.
   const nowBuilding = pickNowBuilding(projects, home);
+  // Each total can be switched off in Admin → Homepage → Now Building.
   const liveTotals = {
     value: allCurrent.reduce((n, p) => n + (p.project_value ?? 0), 0),
-    valueJobs: allCurrent.filter((p) => p.project_value).length,
+    valueJobs: home.now_building_value_total ? allCurrent.filter((p) => p.project_value).length : 0,
     valuePartial: allCurrent.some((p) => !p.project_value),
-    sf: allCurrent.reduce((n, p) => n + (p.square_feet ?? 0), 0),
+    sf: home.now_building_sf_total ? allCurrent.reduce((n, p) => n + (p.square_feet ?? 0), 0) : 0,
     sfPartial: allCurrent.some((p) => !p.square_feet),
   };
 
