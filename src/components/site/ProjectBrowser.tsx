@@ -120,7 +120,7 @@ function BrowserInner({
       <div
         className={
           mode === "full"
-            ? "-mx-4 border-b border-rule bg-paper/90 px-4 backdrop-blur-md sm:-mx-8 sm:px-8 lg:sticky lg:top-20 lg:z-30 lg:-mx-12 lg:px-12"
+            ? "-mx-4 border-b border-rule bg-paper/90 px-4 backdrop-blur-md sm:-mx-8 sm:px-8 lg:sticky lg:top-20 lg:z-30 xl:-mx-12 xl:px-12"
             : "border-b border-rule"
         }
       >
@@ -140,7 +140,7 @@ function BrowserInner({
                     on ? "bg-ink text-white" : "text-mute hover:bg-bone hover:text-ink"
                   }`}
                 >
-                  {s.label} <span className={on ? "text-white/55" : "text-mute/70"}>{count}</span>
+                  {s.label} <span className={on ? "text-white/55" : "text-mute"}>{count}</span>
                 </button>
               );
             })}
@@ -239,12 +239,15 @@ function BrowserInner({
           {shown.map((p, i) => (
             <li
               key={p.id}
-              className={`animate-fade-up ${mode === "full" && i === 0 && shown.length > 4 ? "sm:col-span-2" : ""} ${mode === "preview" && i >= 5 ? "max-sm:hidden" : ""}`}
+              // Lead card spans two rows on desktop so the next two cards stack beside it — no gap.
+              className={`animate-fade-up ${mode === "full" && i === 0 && shown.length > 4 ? "sm:col-span-2 lg:row-span-2" : ""} ${mode === "preview" && i >= 5 ? "max-sm:hidden" : ""}`}
               style={{ animationDelay: `${Math.min(i, 8) * 50}ms` }}
             >
               <ProjectCard
                 project={p}
                 variant={mode === "full" && i === 0 && shown.length > 4 ? "feature" : "standard"}
+                fill={mode === "full" && i === 0 && shown.length > 4}
+                headingLevel={mode === "full" ? "h2" : "h3"}
                 sizes={
                   mode === "full" && i === 0 && shown.length > 4
                     ? "(min-width: 1024px) 66vw, 100vw"

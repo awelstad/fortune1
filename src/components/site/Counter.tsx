@@ -51,7 +51,8 @@ export function Counter({ value, duration = 1600 }: { value: string; duration?: 
   }, [value, duration]);
 
   return (
-    <span ref={ref} aria-label={value}>
+    <span ref={ref}>
+      <span className="sr-only">{value}</span>
       <span aria-hidden>{text}</span>
     </span>
   );

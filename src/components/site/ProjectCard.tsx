@@ -50,7 +50,6 @@ export function ProjectCard({
       <Link
         href={`/projects/${project.slug}`}
         className={`block focus-visible:outline-offset-4 ${fill ? "lg:flex lg:h-full lg:flex-col" : ""}`}
-        aria-label={`${project.name} — ${locationOf(project)}`}
       >
         <div
           className={`relative overflow-hidden bg-graphite ${aspect[variant]} ${
