@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { LandingPage, SiteSettings } from "@/lib/types";
 import { SocialLinks } from "./SocialLinks";
+import { mediaUrl } from "@/lib/media";
 
 export function SiteFooter({
   site,
@@ -15,26 +16,46 @@ export function SiteFooter({
   areas: LandingPage[];
 }) {
   const tel = site.phone?.replace(/[^\d+]/g, "");
+  const logos = (site.affiliations ?? []).filter((a) => !a.hidden && a.image);
   const cityLine = [site.city, [site.state, site.postal_code].filter(Boolean).join(" ")].filter(Boolean).join(", ");
 
   return (
     <footer className="bg-ink text-white">
-      {site.affiliations.length > 0 && (
+      {logos.length > 0 && (
         <div className="border-b border-white/10">
           <div className="shell flex flex-col gap-6 py-10 md:flex-row md:items-center md:justify-between">
             <p className="label text-fog">Certifications &amp; Affiliations</p>
-            <ul className="flex flex-wrap items-center gap-x-10 gap-y-6">
-              {site.affiliations.map((a) => (
-                <li key={a.name} className="rounded-sm bg-white/95 px-3 py-2">
+            <ul className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-center sm:gap-4">
+              {logos.map((a) => {
+                const logo = (
                   <Image
-                    src={a.image}
+                    src={mediaUrl(a.image)!}
                     alt={a.name}
-                    width={160}
-                    height={56}
-                    className="h-9 w-auto object-contain grayscale transition hover:grayscale-0"
+                    width={a.width ?? 240}
+                    height={a.height ?? 80}
+                    sizes="200px"
+                    quality={85}
+                    className="max-h-[4.5rem] w-auto max-w-full object-contain grayscale transition duration-300 group-hover:grayscale-0"
                   />
-                </li>
-              ))}
+                );
+                return (
+                  <li key={a.name} className="group grid h-24 place-items-center rounded-sm bg-white px-4 py-3 sm:w-44">
+                    {a.href ? (
+                      <a
+                        href={a.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`${a.name} (opens in a new tab)`}
+                        className="grid h-full w-full place-items-center"
+                      >
+                        {logo}
+                      </a>
+                    ) : (
+                      logo
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>

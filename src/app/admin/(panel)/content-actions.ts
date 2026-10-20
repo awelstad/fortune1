@@ -553,3 +553,32 @@ export async function saveNowBuilding(input: {
     return { ok: true, message: "Now Building saved." };
   });
 }
+
+// ---------------------------------------------------------------------------
+// Footer affiliation logos
+// ---------------------------------------------------------------------------
+const AFFILIATION_IMAGE = /^(site\/affiliations\/[\w\-.]+\.(png|jpe?g|webp|avif|gif)|\/brand\/[\w\-.]+\.(png|jpe?g|webp|svg))$/i;
+
+export async function saveAffiliations(
+  items: { name: string; image: string; href?: string; hidden?: boolean; width?: number; height?: number }[],
+): Promise<ActionResult> {
+  return run(async (): Promise<ActionResult> => {
+    const { supabase } = await requireAdmin();
+    const clean = [];
+    for (const a of (items ?? []).slice(0, 24)) {
+      const name = String(a.name ?? "").trim().slice(0, 120);
+      const image = String(a.image ?? "").trim();
+      if (!name) return { ok: false, message: "Every logo needs an organization name (used as its alt text)." };
+      if (!AFFILIATION_IMAGE.test(image) || image.includes("..")) return { ok: false, message: `Invalid image for ${name}.` };
+      const rawHref = String(a.href ?? "").trim();
+      const href = rawHref ? safeHref(/^https?:\/\//i.test(rawHref) ? rawHref : `https://${rawHref}`) : null;
+      if (rawHref && !href) return { ok: false, message: `Invalid link for ${name}.` };
+      const dim = (n: unknown) => (Number.isFinite(Number(n)) && Number(n) > 0 ? Math.min(10000, Math.round(Number(n))) : undefined);
+      clean.push({ name, image, ...(href ? { href } : {}), ...(a.hidden ? { hidden: true } : {}), width: dim(a.width), height: dim(a.height) });
+    }
+    const { error } = await supabase.from("site_settings").update({ affiliations: clean }).eq("id", 1);
+    if (error) throw error;
+    refresh();
+    return { ok: true, message: "Affiliations saved." };
+  });
+}

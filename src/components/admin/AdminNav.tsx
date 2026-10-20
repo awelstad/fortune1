@@ -16,6 +16,7 @@ const ITEMS = [
   { href: "/admin/careers", label: "Job Openings" },
   { href: "/admin/prequalification", label: "Prequal & Safety" },
   { href: "/admin/testimonials", label: "Testimonials" },
+  { href: "/admin/affiliations", label: "Affiliations" },
   { href: "/admin/inquiries", label: "Inquiries & Applications" },
   { href: "/admin/settings", label: "Site Settings" },
   { href: "/admin/account", label: "Account" },

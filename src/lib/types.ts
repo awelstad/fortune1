@@ -131,7 +131,8 @@ export type HomepageSettings = {
   cta_button_href: string | null;
 };
 
-export type Affiliation = { name: string; image: string; href?: string };
+/** Footer affiliation logo. `image` is a media-bucket path (site/affiliations/…) or a /public path. */
+export type Affiliation = { name: string; image: string; href?: string; hidden?: boolean; width?: number; height?: number };
 
 export type SiteSettings = {
   company_name: string;
