@@ -3,6 +3,7 @@ import Link from "next/link";
 import { requireAdminPage } from "@/lib/admin/auth";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { SignOutButton } from "@/components/admin/SignOutButton";
+import { IdleSignOut } from "@/components/admin/IdleSignOut";
 
 export const dynamic = "force-dynamic";
 
@@ -15,6 +16,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
 
   return (
     <div className="lg:grid lg:grid-cols-[15rem_1fr]">
+      <IdleSignOut />
       <aside className="sticky top-0 z-30 border-b border-zinc-800 bg-ink text-white lg:h-dvh lg:border-b-0 lg:border-r">
         <div className="flex h-full flex-col">
           <div className="flex items-center justify-between px-5 py-4 lg:py-6">

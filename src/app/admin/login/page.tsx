@@ -6,6 +6,7 @@ export const metadata = { title: "Sign in" };
 const ERRORS: Record<string, string> = {
   "not-admin": "That account doesn't have admin access. Ask an owner to add you.",
   link: "That sign-in link is invalid or has expired. Request a new one below.",
+  timeout: "You were signed out after 30 minutes without activity. Please sign in again.",
 };
 
 export default async function LoginPage({ searchParams }: PageProps<"/admin/login">) {

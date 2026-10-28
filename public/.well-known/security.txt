@@ -1,0 +1,4 @@
+# Report a security issue with this website.
+Contact: https://fortune-psi-wheat.vercel.app/contact
+Expires: 2027-10-31T00:00:00.000Z
+Preferred-Languages: en

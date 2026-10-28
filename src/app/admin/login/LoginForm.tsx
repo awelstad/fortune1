@@ -37,7 +37,8 @@ export function LoginForm({ next, initialError }: { next: string; initialError?:
       setError(error.message === "Invalid login credentials" ? "Incorrect email or password." : error.message);
       return;
     }
-    router.replace(next);
+    // Two-step verification comes next; it returns to `next` afterwards.
+    router.replace(`/admin/mfa?next=${encodeURIComponent(next)}`);
     router.refresh();
   }
 

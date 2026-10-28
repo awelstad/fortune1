@@ -19,6 +19,7 @@ const ITEMS = [
   { href: "/admin/affiliations", label: "Affiliations" },
   { href: "/admin/inquiries", label: "Inquiries & Applications" },
   { href: "/admin/settings", label: "Site Settings" },
+  { href: "/admin/activity", label: "Activity Log" },
   { href: "/admin/account", label: "Account" },
 ];
 

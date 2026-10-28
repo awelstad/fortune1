@@ -3,15 +3,18 @@ import { after } from "next/server";
 import { createPublicClient } from "./supabase/public";
 import { notifySubmission, type NotifyInput } from "./notify";
 import { verifyTurnstile } from "./turnstile";
+import { withinRateLimit } from "./rate-limit";
 
 export const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const UPLOAD_PATH = /^(resumes|bids)\/[0-9a-f-]{36}\/[\w.\- ()]{1,120}$/i;
 
-/** Honeypot, fill-time and Turnstile checks. Returns false for likely bots. */
+/** Honeypot, fill-time, Turnstile and rate-limit checks. Returns false for likely bots. */
 export async function isHuman(form: FormData): Promise<boolean> {
   if (form.get("website")) return false;
   const started = Number(form.get("started"));
   if (started && Date.now() - started < 2500) return false;
+  // Any one visitor: at most 5 form posts per 10 minutes and 20 per day, across all forms.
+  if (!(await withinRateLimit("form", [[600, 5], [86400, 20]]))) return false;
   return verifyTurnstile(form.get("cf-turnstile-response"));
 }
 
